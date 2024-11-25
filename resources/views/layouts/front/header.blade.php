@@ -246,10 +246,10 @@
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </div>
-            <div class="main-menu-three__right">
-                <!-- <div class="main-menu-three__search-box">
+            <!--  <div class="main-menu-three__right">
+                <div class="main-menu-three__search-box">
                     <a href="#" class="main-menu-three__search search-toggler icon-magnifying-glass"></a>
-                </div> -->
+                </div>
                 <div class="main-menu-three__call">
                     <div class="main-menu-three__call-icon">
                         <span class="icon-phone-ringing"></span>
@@ -259,7 +259,7 @@
                         <h5><a href="tel:12463330088">+639453813158</a></h5>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </nav>
 </header>

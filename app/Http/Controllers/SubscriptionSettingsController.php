@@ -15,18 +15,24 @@ class SubscriptionSettingsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $page = "Subscription Settings";
 
+        // Fetch rewards
         $rewards = ManageReward::all()->mapWithKeys(function ($reward) {
             return [
                 $reward->reward_type => "{$reward->reward_type} - {$reward->reward_amount}"
             ];
         })->toArray(); // Convert to array
 
-        return view('pages.back.v_subscriptionsettings', compact('page', 'rewards'));
+        // Fetch subscription settings
+        $subscriptions = SubscriptionSettings::all(); // Retrieve all subscription data
+
+        return view('pages.back.v_subscriptionsettings', compact('page', 'rewards', 'subscriptions'));
     }
+
 
 
     /**
@@ -38,13 +44,13 @@ class SubscriptionSettingsController extends Controller
     {
 
         $subscriptions = SubscriptionSettings::with('rewards')->whereNull('deleted_at')
-        ->whereHas('rewards', function ($query) {
-            $query->where('status', 'active');
-        })->get();
+            ->whereHas('rewards', function ($query) {
+                $query->where('status', 'active');
+            })->get();
 
         // Format the data
         $formattedData = $subscriptions->map(function ($item) {
-           
+
             $rewardAmount = $item->rewards->isNotEmpty() ? $item->rewards->first()->reward_amount : 'N/A';
 
             return [
@@ -52,12 +58,15 @@ class SubscriptionSettingsController extends Controller
                 'description' => $item->subscription_desc,
                 'reward' => $item->subscription_reward,
                 'reward_amount' => $rewardAmount,
+                'subscription_price' => $item->subscription_price,
+
                 'actions' =>
                 '<a class="edit-btn" href="javascript:void(0)" 
                         data-id="' . $item->id . '"
                         data-type="' . $item->subscription_type . '"
                         data-description="' . $item->subscription_desc . '"
                         data-reward="' . $item->subscription_reward . '"
+                        data-price="' . $item->subscription_price . '"
                         data-modaltitle="Edit">
                     <i class="bi bi-pencil-square fs-3"></i>
                     </a>
@@ -85,13 +94,15 @@ class SubscriptionSettingsController extends Controller
         $request->validate([
             'subscription_type' => 'required|string',
             'subscription_description' => 'required',
-            'subscription_reward' => 'required|string'
+            'subscription_reward' => 'required|string',
+            'subscription_price' => 'required|string'
         ]);
 
         SubscriptionSettings::create([
             'subscription_type' => $request->subscription_type,
             'subscription_desc' => $request->subscription_description,
             'subscription_reward' => $request->subscription_reward,
+            'subscription_price' => $request->subscription_price,
         ]);
 
         return response()->json([
@@ -120,13 +131,15 @@ class SubscriptionSettingsController extends Controller
         $request->validate([
             'subscription_type' => 'required|string',
             'subscription_description' => 'required',
-            'subscription_reward' => 'required|string'
+            'subscription_reward' => 'required|string',
+            'subscription_price' => 'required|string'
         ]);
 
         $subscription->update([
             'subscription_type' => $request->subscription_type,
             'subscription_desc' => $request->subscription_description,
             'subscription_reward' => $request->subscription_reward,
+            'subscription_price' => $request->subscription_price,
         ]);
 
         return response()->json(['message' => 'Subscription updated successfully', 'type' => 'success']);

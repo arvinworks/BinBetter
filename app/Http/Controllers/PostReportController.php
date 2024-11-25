@@ -27,7 +27,7 @@ class PostReportController extends Controller
      */
     public function create()
     {
-        $postGarbageReport = PostReport::where('type', 'Garbage' )->whereNull('deleted_at')->get();
+        $postGarbageReport = PostReport::where('type', 'Garbage')->whereNull('deleted_at')->get();
 
         $formattedGarbageData = $postGarbageReport->map(function ($item) {
             $actions = '';
@@ -44,34 +44,41 @@ class PostReportController extends Controller
             }
 
             if (auth()->check()) {
-                if (auth()->user()->role === 'LGU') {
+                $user = auth()->user();
+
+                if ($user->role === 'LGU') {
                     // LGU user: show status button if status is pending, otherwise show '--'
                     $actions = $item->status === 'Pending'
                         ? '<button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="approve">
-                           Accept <i class="bi bi-check fs-5"></i>
-                       </button>   
-                       
-                       <button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="reject">
-                          Reject <i class="bi bi-x fs-5"></i>
-                       </button>'
+                   Accept <i class="bi bi-check fs-5"></i>
+               </button>   
+               <button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="reject">
+                  Reject <i class="bi bi-x fs-5"></i>
+               </button>'
                         : '--';
                 } else {
-                    // Non-LGU user: show edit and delete buttons
-                    $actions = '<a class="edit-btn" href="javascript:void(0)" 
-                               data-id="' . $item->id . '"
-                               data-type="' . htmlspecialchars($item->type, ENT_QUOTES, 'UTF-8') . '"
-                               data-address="' . htmlspecialchars($item->address, ENT_QUOTES, 'UTF-8') . '"
-                               data-photo="' . htmlspecialchars($item->photo, ENT_QUOTES, 'UTF-8') . '"
-                               data-video="' . htmlspecialchars($item->video_url, ENT_QUOTES, 'UTF-8') . '"
-                               data-description="' . htmlspecialchars($item->description, ENT_QUOTES, 'UTF-8') . '"
-                               data-modaltitle="Edit">
-                               <i class="bi bi-pencil-square fs-3"></i>
-                            </a>
-                            <a class="delete-btn" href="javascript:void(0)" data-id="' . $item->id . '">
-                               <i class="bi bi-trash fs-3"></i>
-                            </a>';
+                    $residentPostreports = \App\Models\PostReport::where('resident_id', $user->id)->exists();
+
+                    if ($residentPostreports) {
+                        $actions = '<a class="edit-btn" href="javascript:void(0)" 
+                           data-id="' . $item->id . '"
+                           data-type="' . htmlspecialchars($item->type, ENT_QUOTES, 'UTF-8') . '"
+                           data-address="' . htmlspecialchars($item->address, ENT_QUOTES, 'UTF-8') . '"
+                           data-photo="' . htmlspecialchars($item->photo, ENT_QUOTES, 'UTF-8') . '"
+                           data-video="' . htmlspecialchars($item->video_url, ENT_QUOTES, 'UTF-8') . '"
+                           data-description="' . htmlspecialchars($item->description, ENT_QUOTES, 'UTF-8') . '"
+                           data-modaltitle="Edit">
+                           <i class="bi bi-pencil-square fs-3"></i>
+                        </a>
+                        <a class="delete-btn" href="javascript:void(0)" data-id="' . $item->id . '">
+                           <i class="bi bi-trash fs-3"></i>
+                        </a>';
+                    } else {
+                        $actions = 'Not right to access this post report';
+                    }
                 }
             }
+
 
             // Return formatted item data with actions
             return [
@@ -86,7 +93,7 @@ class PostReportController extends Controller
         });
 
 
-        $postRecycledReport = PostReport::where('type', 'Recycled' )->whereNull('deleted_at')->get();
+        $postRecycledReport = PostReport::where('type', 'Recycled')->whereNull('deleted_at')->get();
 
         $formattedRecycledData = $postRecycledReport->map(function ($item) {
             $actions = '';
@@ -144,7 +151,7 @@ class PostReportController extends Controller
             ];
         });
 
-        return response()->json(['data_garbage' => $formattedGarbageData, 'data_recycled' => $formattedRecycledData ]);
+        return response()->json(['data_garbage' => $formattedGarbageData, 'data_recycled' => $formattedRecycledData]);
     }
 
 
@@ -215,13 +222,13 @@ class PostReportController extends Controller
         if ($request->type === 'Recycled') {
             $request->validate([
                 'type' => 'required|string',
-               // 'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Validate each file in the array
+                // 'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Validate each file in the array
                 'description' => 'required'
             ]);
         } else {
             $request->validate([
                 'type' => 'required|string',
-               // 'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Validate each file in the array
+                // 'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Validate each file in the array
                 'video_url' => 'nullable|url|regex:/^https:\/\//',
                 'address' => 'required',
                 'description' => 'required'
@@ -299,25 +306,23 @@ class PostReportController extends Controller
         $report_id = $request->reportId;
         $status_type = $request->statusType;
         $status = '';
-        
-        if($status_type === 'approve') {
+
+        if ($status_type === 'approve') {
             $status = 'Accepted';
         } else {
             $status = 'Rejected';
         }
-        
-        
+
+
         $postreport = PostReport::where('id', $report_id)->update(['status' => $status]);
 
         if ($postreport) {
-            
-            if($status_type === 'approve') {
-              return response()->json(['message' => 'Post report accepted successfully', 'type' => 'success']);
+
+            if ($status_type === 'approve') {
+                return response()->json(['message' => 'Post report accepted successfully', 'type' => 'success']);
             } else {
-               return response()->json(['message' => 'Post report rejected successfully', 'type' => 'success']);
+                return response()->json(['message' => 'Post report rejected successfully', 'type' => 'success']);
             }
-        
-          
         } else {
             return response()->json(['message' => 'Failed to update post report status', 'type' => 'error'], 500);
         }

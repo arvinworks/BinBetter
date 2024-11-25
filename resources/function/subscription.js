@@ -1,73 +1,72 @@
-
 $(document).ready(function () {
-
-
     fetchSubscriptionSettings();
 
-    function fetchSubscriptionSettings() {
+    /*  function fetchSubscriptionSettings() {
         $.ajax({
-            url: '/subscription-api', // Your API endpoint
-            type: 'GET',
+            url: "/subscription-api", // Your API endpoint
+            type: "GET",
             success: function (response) {
                 if (response.data.length > 0) {
-                    $('#subscription-container').empty();
+                    $("#subscription-container").empty();
 
                     // Prepare a map of user subscription IDs for easy lookup
                     const userSubscriptions = response.datausersubs || []; // Ensure user subscriptions are defined
-                    console.log(response.data)
+                    console.log(response.data);
                     response.data.forEach(function (subscription) {
-                        let statusHtml = '';
-                        let buttonText = 'Select';
-                        let buttonSelectType = '';
-                        let buttonDisabled = '';
-                        let buttonClass = '';
+                        let statusHtml = "";
+                        let buttonText = "Select";
+                        let buttonSelectType = "";
+                        let buttonDisabled = "";
+                        let buttonClass = "";
                         let subscriptionStatus;
                         let isUserSubscribed = false;
 
                         // Check if the user has a subscription
                         userSubscriptions.forEach(function (userSubscription) {
-                            if (userSubscription.subscription_setting.id === subscription.id) {
+                            if (
+                                userSubscription.subscription_setting.id ===
+                                subscription.id
+                            ) {
                                 subscriptionStatus = userSubscription.status;
                                 isUserSubscribed = true;
                             }
                         });
 
-
                         // If the user has their own subscription, use its status
                         if (isUserSubscribed) {
-                            subscriptionStatus = subscription.subscriptions[0].status;
-
+                            subscriptionStatus =
+                                subscription.subscriptions[0].status;
                         } else {
-                            subscriptionStatus = subscription.subscriptions.status;
-
+                            subscriptionStatus =
+                                subscription.subscriptions.status;
                         }
-
-
 
                         switch (subscriptionStatus) {
-                            case 'Pending':
+                            case "Pending":
                                 statusHtml = `<div class="subscription-overlay"><h3>Pending...</h3></div>`;
-                                buttonText = 'Selected';
+                                buttonText = "Selected";
                                 break;
-                            case 'Approved':
+                            case "Approved":
                                 statusHtml = `<div class="subscription-overlay"><h3>Approved <i class="bi bi-check-lg"></i></h3></div>`;
-                                buttonText = 'Selected';
-                                buttonDisabled = 'disabled';
+                                buttonText = "Selected";
+                                buttonDisabled = "disabled";
                                 break;
-                            case 'Cancelled':
-                                buttonText = 'Re-Select';
-                                buttonSelectType = 'reselect';
+                            case "Cancelled":
+                                buttonText = "Re-Select";
+                                buttonSelectType = "reselect";
                                 break;
                             default:
-                                statusHtml = ''; // Default no overlay
+                                statusHtml = ""; // Default no overlay
                                 break;
                         }
 
-                        const rewardAmount = subscription.rewards.length > 0 ? subscription.rewards[0].reward_amount : 0;
-
+                        const rewardAmount =
+                            subscription.rewards.length > 0
+                                ? subscription.rewards[0].reward_amount
+                                : 0;
 
                         // Append the subscription card to the container
-                        $('#subscription-container').append(`
+                        $("#subscription-container").append(`
                             <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-3">
                                 <div class="card position-relative">
                                     ${statusHtml}
@@ -90,63 +89,179 @@ $(document).ready(function () {
                         `);
                     });
                 } else {
-                    $('#no-data-message').show();
+                    $("#no-data-message").show();
                 }
             },
             error: function (xhr) {
                 // Handle any errors
                 console.error(xhr.responseJSON.message);
-                $('#no-data-message').show();
-            }
+                $("#no-data-message").show();
+            },
+        });
+    } */
+
+    function fetchSubscriptionSettings() {
+        $.ajax({
+            url: "/subscription-api", // Your API endpoint
+            type: "GET",
+            success: function (response) {
+                if (response.data.length > 0) {
+                    $("#subscription-container").empty();
+                    const userSubscriptions = response.datausersubs || [];
+                    console.log(response.data);
+                    response.data.forEach(function (subscription) {
+                        let statusHtml = "";
+                        let buttonText = "Select";
+                        let buttonSelectType = "";
+                        let buttonDisabled = "";
+                        let buttonClass = "";
+                        let subscriptionStatus;
+                        let isUserSubscribed = false;
+
+                        // Check if the user has a subscription
+                        userSubscriptions.forEach(function (userSubscription) {
+                            if (
+                                userSubscription.subscription_setting.id ===
+                                subscription.id
+                            ) {
+                                subscriptionStatus = userSubscription.status;
+                                isUserSubscribed = true;
+                            }
+                        });
+
+                        if (isUserSubscribed) {
+                            subscriptionStatus =
+                                subscription.subscriptions[0].status;
+                        } else {
+                            subscriptionStatus =
+                                subscription.subscriptions.status;
+                        }
+
+                        switch (subscriptionStatus) {
+                            case "Pending":
+                                statusHtml = `<div class="subscription-overlay"><h3>Pending...</h3></div>`;
+                                buttonText = "Selected";
+                                break;
+                            case "Approved":
+                                statusHtml = `<div class="subscription-overlay"><h3>Approved <i class="bi bi-check-lg"></i></h3></div>`;
+                                buttonText = "Selected";
+                                buttonDisabled = "disabled";
+                                break;
+                            case "Cancelled":
+                                buttonText = "Re-Select";
+                                buttonSelectType = "reselect";
+                                break;
+                            default:
+                                statusHtml = "";
+                                break;
+                        }
+
+                        const rewardAmount =
+                            subscription.rewards.length > 0
+                                ? subscription.rewards[0].reward_amount
+                                : 0;
+
+                        const subscriptionPrice =
+                            subscription.subscription_price || "N/A";
+                        $("#subscription-container").append(`
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-3">
+                            <div class="card position-relative">
+                                ${statusHtml}
+                                <div class="card-body p-6 mb-4">
+                                    <h2 class="mb-3">${subscription.subscription_type}</h2>
+                                    <div style="margin-left:-18px;">
+                                        ${subscription.subscription_desc}
+                                    </div>
+                                    <div class="d-flex align-items-end mt-6 mb-3">
+                                        <h1 class="me-1 mb-0">${rewardAmount}</h1>
+                                        <p class="mb-0">Reward Points</p>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between mt-3">
+                                        <p class="mb-0 text-muted">Price:</p>
+                                        <h3 class="text-primary mb-0">₱ ${subscriptionPrice} Monthly</h3>
+                                    </div>
+                                    <button class="btn btn-outline-primary mt-3 text-uppercase select-subscription ${buttonClass}" 
+                                       data-subscription-settings-id="${subscription.id}" data-type="${buttonSelectType}" ${buttonDisabled}>
+                                       ${buttonText}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    });
+                } else {
+                    $("#no-data-message").show();
+                }
+            },
+            error: function (xhr) {
+                // Handle any errors
+                console.error(xhr.responseJSON.message);
+                $("#no-data-message").show();
+            },
         });
     }
 
     function fetchUserSubscriptions() {
         $.ajax({
-            url: '/subscription-api', // Ensure this URL is correct
-            type: 'GET',
+            url: "/subscription-api", // Ensure this URL is correct
+            type: "GET",
             success: function (response) {
-                $('#selectedSubscriptionTable tbody').empty(); // Clear previous data
+                $("#selectedSubscriptionTable tbody").empty(); // Clear previous data
 
                 if (response.datausersubs.length > 0) {
                     let hasValidSubscription = false;
 
                     response.datausersubs.forEach(function (subscription) {
-
-                        let actionHtml = '';
+                        let actionHtml = "";
                         let subscriptionStatus;
 
-                        if (subscription.subscription_setting) { // Ensure subscription setting is present
+                        if (subscription.subscription_setting) {
+                            // Ensure subscription setting is present
                             subscriptionStatus = subscription.status; // Directly use subscription status
                             hasValidSubscription = true;
 
                             switch (subscriptionStatus) {
-                                case 'Pending':
-                                    $('.select-subscription').prop('disabled', true);
+                                case "Pending":
+                                    $(".select-subscription").prop(
+                                        "disabled",
+                                        true
+                                    );
                                     break;
-                                case 'Approved':
-                                    $('.select-subscription').prop('disabled', true);
+                                case "Approved":
+                                    $(".select-subscription").prop(
+                                        "disabled",
+                                        true
+                                    );
                                     actionHtml = `<p><i class="bi bi-check-lg fs-3 position-relative" style="top:7px;"></i></p>`;
                                     break;
-                                case 'Cancelled':
-                                    $('.select-subscription').prop('disabled', false);
+                                case "Cancelled":
+                                    $(".select-subscription").prop(
+                                        "disabled",
+                                        false
+                                    );
                                     break;
-                                case 'Expired':
-                                    $('.select-subscription').prop('disabled', false);
+                                case "Expired":
+                                    $(".select-subscription").prop(
+                                        "disabled",
+                                        false
+                                    );
                                     break;
                             }
 
-
-                            if (subscriptionStatus !== 'Approved') {
+                            if (subscriptionStatus !== "Approved") {
                                 actionHtml = `<button type="button" class="btn btn-outline-danger btn-sm cancel-subscription" data-subscribe-id="${subscription.id}"><span class="mt-1">Cancel</span> <i class="bi bi-x-lg"></i></button>`;
                             }
 
-                            if (subscriptionStatus === 'Expired') {
+                            if (subscriptionStatus === "Expired") {
                                 actionHtml = `<p><i class="bi bi-x-lg fs-3 position-relative" style="top:7px;"></i></p>`;
                             }
 
-                            if (subscriptionStatus === 'Pending' || subscriptionStatus === 'Approved' || subscriptionStatus === 'Expired') {
-                                $('#selectedSubscriptionTable tbody').append(`
+                            if (
+                                subscriptionStatus === "Pending" ||
+                                subscriptionStatus === "Approved" ||
+                                subscriptionStatus === "Expired"
+                            ) {
+                                $("#selectedSubscriptionTable tbody").append(`
                                 <tr>
                                     <td>${subscription.subscription_setting.subscription_type}</td>
                                     <td>${subscription.subscription_setting.subscription_reward}</td>
@@ -155,25 +270,24 @@ $(document).ready(function () {
                                 </tr>
                             `);
                             } else {
-                                $('#selectedSubscriptionTable tbody').append(`
+                                $("#selectedSubscriptionTable tbody").append(`
                                     <tr>
                                         <td colspan="4">No data found</td>
                                     </tr>
                                 `);
                             }
-
                         }
                     });
 
                     if (!hasValidSubscription) {
-                        $('#selectedSubscriptionTable tbody').append(`
+                        $("#selectedSubscriptionTable tbody").append(`
                             <tr>
                                 <td colspan="4">No data found</td>
                             </tr>
                         `);
                     }
                 } else {
-                    $('#selectedSubscriptionTable tbody').append(`
+                    $("#selectedSubscriptionTable tbody").append(`
                         <tr>
                             <td colspan="4">No data found</td>
                         </tr>
@@ -182,51 +296,47 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 console.error(xhr.responseJSON.message);
-                $('#no-data-message').show();
-            }
+                $("#no-data-message").show();
+            },
         });
     }
 
-    fetchUserSubscriptions()
+    fetchUserSubscriptions();
 
-
-
-
-    $(document).on('click', '.select-subscription', function () {
-
-        let subscriptionSettingsId = $(this).data('subscription-settings-id');
-        let subscriptionType = $(this).data('type');
+    $(document).on("click", ".select-subscription", function () {
+        let subscriptionSettingsId = $(this).data("subscription-settings-id");
+        let subscriptionType = $(this).data("type");
 
         $.ajax({
-            url: '/subscription-select',
-            type: 'POST',
+            url: "/subscription-select",
+            type: "POST",
             data: {
                 subscription_settings_id: subscriptionSettingsId,
-                subscription_type: subscriptionType
+                subscription_type: subscriptionType,
             },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                xhr.setRequestHeader(
+                    "X-CSRF-TOKEN",
+                    $('meta[name="csrf-token"]').attr("content")
+                );
             },
             success: function (data) {
                 fetchSubscriptionSettings();
-                fetchUserSubscriptions()
-                toast(data.type, data.message)
+                fetchUserSubscriptions();
+                toast(data.type, data.message);
             },
             error: function (response) {
-
                 if (response.status === 400) {
-                    toast('error', response.responseJSON.message);
+                    toast("error", response.responseJSON.message);
                 } else {
-                    console.log('Error:', response);
+                    console.log("Error:", response);
                 }
-
-            }
+            },
         });
     });
 
-    $(document).on('click', '.cancel-subscription', function () {
-
-        let subscriptionId = $(this).data('subscribe-id');
+    $(document).on("click", ".cancel-subscription", function () {
+        let subscriptionId = $(this).data("subscribe-id");
 
         Swal.fire({
             title: "Are you sure?",
@@ -236,58 +346,65 @@ $(document).ready(function () {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, cancel it!",
-            cancelButtonText: "Close"
+            cancelButtonText: "Close",
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/subscription-cancel',
-                    type: 'POST',
+                    url: "/subscription-cancel",
+                    type: "POST",
                     data: {
-                        subscription_id: subscriptionId
+                        subscription_id: subscriptionId,
                     },
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                        xhr.setRequestHeader(
+                            "X-CSRF-TOKEN",
+                            $('meta[name="csrf-token"]').attr("content")
+                        );
                     },
                     success: function (data) {
                         fetchSubscriptionSettings();
-                        fetchUserSubscriptions()
-                        toast(data.type, data.message)
+                        fetchUserSubscriptions();
+                        toast(data.type, data.message);
                     },
                     error: function (response) {
-
                         if (response.status === 400) {
-                            toast('error', response.responseJSON.message);
+                            toast("error", response.responseJSON.message);
                         } else {
-                            console.log('Error:', response);
+                            console.log("Error:", response);
                         }
-
-                    }
+                    },
                 });
             }
         });
-
-
     });
 
-    let tableId = 'dynamic-subscription-table';
+    let tableId = "dynamic-subscription-table";
 
     // Set headers dynamically
-    let headers = ['Profile', 'Role', 'Subscription Type', 'Subscription Reward', 'Multiplier Promotion', 'Status', 'Action'];
-    headers.forEach(header => {
+    let headers = [
+        "Profile",
+        "Role",
+        "Subscription Type",
+        "Subscription Reward",
+        "Multiplier Promotion",
+        "Status",
+        "Action",
+    ];
+    headers.forEach((header) => {
         $(`#${tableId}-headers`).append(`<th class="px-5">${header}</th>`);
     });
 
     // Initialize DataTable
     var subscriptionsDataTable = $(`#${tableId}`).DataTable({
         ajax: {
-            url: '/subscription-api',
-            dataSrc: 'datasubscription'
+            url: "/subscription-api",
+            dataSrc: "datasubscription",
         },
         columns: [
             {
-                data: 'profile',
+                data: "profile",
                 render: function (data, type, row) {
-                    if (data != 'N/A') {
+                    if (data != "N/A") {
                         return `
                         <div class="d-flex align-items-center">
                             <img src="${data}" alt="${row.username}" class="avatar avatar-lg rounded-circle">
@@ -308,26 +425,26 @@ $(document).ready(function () {
 
                         `;
                     }
-                }
+                },
             },
             {
-                data: 'role',
-                class: 'px-5'
+                data: "role",
+                class: "px-5",
             },
             {
-                data: 'subscription',
-                class: 'px-5'
+                data: "subscription",
+                class: "px-5",
             },
             {
-                data: 'reward_amount',
-                class: 'px-5',
+                data: "reward_amount",
+                class: "px-5",
                 render: function (data) {
-                    return data + ' points';
-                }
+                    return data + " points";
+                },
             },
             {
-                data: 'reward',
-                class: 'px-5'
+                data: "reward",
+                class: "px-5",
             },
             // {
             //     data: 'promotion',
@@ -337,39 +454,39 @@ $(document).ready(function () {
             //     }
             // },
             {
-                data: 'status',
-                class: 'px-5'
+                data: "status",
+                class: "px-5",
             },
             {
-                data: 'actions',
-                class: 'px-5',
+                data: "actions",
+                class: "px-5",
                 render: function (data) {
                     return data;
-                }
-            }
+                },
+            },
         ],
         autoWidth: false,
         responsive: {
             breakpoints: [
-                { name: 'desktop', width: Infinity },
-                { name: 'tablet', width: 1024 },
-                { name: 'phone', width: 768 }
-            ]
+                { name: "desktop", width: Infinity },
+                { name: "tablet", width: 1024 },
+                { name: "phone", width: 768 },
+            ],
         },
         paging: true,
         searching: true,
         ordering: false,
         info: true,
         pageLength: 10,
-        dom: '<lf<t>ip>',
+        dom: "<lf<t>ip>",
         language: {
-            search: 'Filter',
+            search: "Filter",
             paginate: {
                 first: '<i class="bi bi-chevron-double-left"></i>',
                 previous: '<i class="bi bi-chevron-left"></i>',
                 next: '<i class="bi bi-chevron-right"></i>',
-                last: '<i class="bi bi-chevron-double-right"></i>'
-            }
+                last: '<i class="bi bi-chevron-double-right"></i>',
+            },
         },
         fixedHeader: {
             header: true,
@@ -379,10 +496,8 @@ $(document).ready(function () {
         scrollY: 600,
     });
 
-
-    $(document).on('click', '.approve-btn', function () {
-
-        let id = $(this).data('id');
+    $(document).on("click", ".approve-btn", function () {
+        let id = $(this).data("id");
 
         Swal.fire({
             title: "Approve this subscription?",
@@ -392,37 +507,34 @@ $(document).ready(function () {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, approve it!",
-            cancelButtonText: "Cancel"
+            cancelButtonText: "Cancel",
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/subscription-approve',
-                    type: 'POST',
+                    url: "/subscription-approve",
+                    type: "POST",
                     data: {
-                        subscription_id: id
+                        subscription_id: id,
                     },
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                        xhr.setRequestHeader(
+                            "X-CSRF-TOKEN",
+                            $('meta[name="csrf-token"]').attr("content")
+                        );
                     },
                     success: function (data) {
                         subscriptionsDataTable.ajax.reload();
-                        toast(data.type, data.message)
+                        toast(data.type, data.message);
                     },
                     error: function (response) {
-
                         if (response.status === 400) {
-                            toast('error', response.responseJSON.message);
+                            toast("error", response.responseJSON.message);
                         } else {
-                            console.log('Error:', response);
+                            console.log("Error:", response);
                         }
-
-                    }
+                    },
                 });
             }
         });
-
-
     });
-
 });
-

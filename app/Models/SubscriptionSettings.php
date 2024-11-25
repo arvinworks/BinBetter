@@ -15,7 +15,8 @@ class SubscriptionSettings extends Model
     protected $fillable = [
         'subscription_type',
         'subscription_desc',
-        'subscription_reward'
+        'subscription_reward',
+        'subscription_price'
     ];
 
     public function subscriptions()

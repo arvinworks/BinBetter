@@ -55,6 +55,8 @@
                     <x-input type="text" name="subscription_type" id="subscription_type" label="Subscription Type:" value="{{ old('subscription_type') }}" placeholder="Enter subscription type" />
                     <x-textarea name="subscription_description" id="subscription_description" label="Subscription Description" placeholder="Enter subscription description in list" :value="old('subscription_description')" rows="5" />
                     <x-select name="subscription_reward" id="subscription_reward" label="Subscription Reward:" :options="$rewards" :selected="old('subscription_reward')" />
+                    <x-input type="text" name="subscription_price" id="subscription_price" label="Subscription Price:" value="{{ old('subscription_price') }}" placeholder="Enter subscription price" />
+
                 </x-form>
 
                 @endcomponent

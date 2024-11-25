@@ -52,6 +52,7 @@ class SubscriptionController extends Controller
                 $userProfile = optional($subscription->user)->profile ?? 'N/A';
                 $subscriptionType = optional($subscription->subscriptionSetting)->subscription_type ?? 'N/A';
                 $subscriptionReward = optional($subscription->subscriptionSetting)->subscription_reward ?? 0;
+                $subscriptionPrice = optional($subscription->subscriptionSetting)->subscription_price ?? 'N/A';
                 $multiplierPromotion = optional($subscription->subscriptionSetting)->multiplier_promotion ?? 0;
 
                 return [
@@ -61,6 +62,7 @@ class SubscriptionController extends Controller
                     'subscription' => $subscriptionType,
                     'reward' => $subscriptionReward,
                     'reward_amount' => $rewardAmount,
+                    'subscription_price' => $subscriptionPrice,
                     // 'promotion' => $multiplierPromotion,
                     'status' => $subscription->status,
                     'actions' => '<button class="btn btn-outline-dark approve-btn btn-sm" ' . ($subscription->status === 'Approved' ||  $subscription->status === 'Expired' ? 'disabled' : '') . ' href="javascript:void(0)" data-id="' . $subscription->id . '">
@@ -343,7 +345,7 @@ class SubscriptionController extends Controller
 
             // Check if the subscription expiration date matches today's date and update statuses
             if ($today->eq(Carbon::parse($reward->expiration_date))) {
-    
+
                 Subscription::where('id', $reward->subscription_id)
                     ->update(['status' => 'Expired']);
 

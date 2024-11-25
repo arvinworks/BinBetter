@@ -52,21 +52,21 @@
 </head>
 
 <body>
- 
-    <div class="preloader">
+
+    <!--     <div class="preloader">
         <img class="preloader__image" width="60" src="{{ asset('assets/front/images/loader.png') }}" alt="" />
-    </div>
+    </div> -->
     <!-- /.preloader -->
 
     <div class="page-wrapper">
 
-    @include('layouts.front.header')
+        @include('layouts.front.header')
 
-    @include('layouts.front.main-slider')
+        @include('layouts.front.main-slider')
 
-    @yield('content')
+        @yield('content')
 
-    @include('layouts.front.footer')
+        @include('layouts.front.footer')
 
     </div>
 
