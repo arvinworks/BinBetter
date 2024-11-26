@@ -188,16 +188,16 @@
 
             if (reports.length > 0) {
                 reports.forEach(function(report) {
-                            $('#reportContents').append(`
+                    $('#reportContents').append(`
                         <tr>
                             <td>${report.username}</td>
                             <td>${report.report_type}</td>
                             <td>${report.report_message}</td>
                         </tr>
                     `);
-                        });
-                    } else {
-                        $('#reportContents').append(`
+                });
+            } else {
+                $('#reportContents').append(`
                     <tr>
                         <td colspan="3" class="text-center">No report found</td>
                     </tr>

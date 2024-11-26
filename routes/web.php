@@ -49,23 +49,23 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     Route::post('/generalsettings-account', [App\Http\Controllers\GeneralSettingsController::class, 'account']);
     Route::post('/generalsettings-password', [App\Http\Controllers\GeneralSettingsController::class, 'password']);
     Route::post('/account/remove', [App\Http\Controllers\GeneralSettingsController::class, 'removeAccount'])->name('account.remove');
-    
+
     Route::resource('message', App\Http\Controllers\MessagesController::class);
-    
+
     Route::resource('lgu', App\Http\Controllers\UserMngtLGUController::class);
     Route::post('/lgu/enable',  [App\Http\Controllers\UserMngtLGUController::class, 'enable']);
     Route::post('/lgu/disable',  [App\Http\Controllers\UserMngtLGUController::class, 'disable']);
-    
-    
+
+
     Route::resource('ngo', App\Http\Controllers\UserMngtNGOController::class);
     Route::post('/ngo/enable',  [App\Http\Controllers\UserMngtNGOController::class, 'enable']);
     Route::post('/ngo/disable',  [App\Http\Controllers\UserMngtNGOController::class, 'disable']);
-    
+
     Route::resource('resident', App\Http\Controllers\UserMngtResidentController::class);
     Route::post('/resident/enable',  [App\Http\Controllers\UserMngtResidentController::class, 'enable']);
     Route::post('/resident/disable',  [App\Http\Controllers\UserMngtResidentController::class, 'disable']);
-    
-    
+
+
     Route::resource('service', App\Http\Controllers\ServiceController::class);
     Route::resource('subscriptionsettings', App\Http\Controllers\SubscriptionSettingsController::class);
 
@@ -73,27 +73,27 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     Route::post('/postreport-accept', [App\Http\Controllers\PostReportController::class, 'accept_report']);
 
     Route::resource('garbage', App\Http\Controllers\GarbageCollectionController::class);
-    
-  
+
+
     Route::resource('garbagetip', App\Http\Controllers\GarbageTipsController::class);
     Route::get('garbagetip-comment-api',  [App\Http\Controllers\GarbageTipsController::class, 'comment_api']);
     Route::post('comment-garbagetip',  [App\Http\Controllers\GarbageTipsController::class, 'comment_garbagetip']);
     Route::post('/comment-garbagetip/{action}/{commentId}', [App\Http\Controllers\GarbageTipsController::class, 'garbagetip_handleLikeDislike']);
-    
+
     Route::resource('report-garbagetip', App\Http\Controllers\ReportGarbageTipController::class);
- 
+
     Route::resource('managereward', App\Http\Controllers\RewardManagementController::class);
     Route::resource('comment', App\Http\Controllers\CommentController::class);
     Route::post('/comment/{action}/{commentId}', [App\Http\Controllers\CommentController::class, 'handleLikeDislike']);
-    
+
     Route::resource('gcash', App\Http\Controllers\GcashSettingsController::class);
     Route::post('gcash-switch', [App\Http\Controllers\GcashSettingsController::class, 'switch_status']);
-    
+
     Route::resource('payment', App\Http\Controllers\PaymentController::class);
     Route::post('show-gcash', [App\Http\Controllers\PaymentController::class, 'show_gcash']);
     Route::post('/payment/receive', [App\Http\Controllers\PaymentController::class, 'receive']);
     Route::post('/payment/reject', [App\Http\Controllers\PaymentController::class, 'reject']);
-    
+
     //Subscription
     Route::get('/subscription', [App\Http\Controllers\SubscriptionController::class, 'index'])->name('subscription');
     Route::get('/subscription-api', [App\Http\Controllers\SubscriptionController::class, 'subscription_api'])->name('subscription.api');
@@ -106,13 +106,9 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     //NGO
     Route::resource('event', App\Http\Controllers\EventController::class);
     Route::get('event-ngo', [App\Http\Controllers\EventController::class, 'event_ngo']);
-    Route::post('/join-event', [ App\Http\Controllers\EventController::class, 'join_event'])->name('event.join');
+    Route::post('/join-event', [App\Http\Controllers\EventController::class, 'join_event'])->name('event.join');
     Route::get('/event-attendance', [App\Http\Controllers\EventController::class, 'event_attendance'])->name('event.attendance');
     Route::get('/event-attendance-api', [App\Http\Controllers\EventController::class, 'event_attendance_api']);
-    Route::post('/event-generate-qr', [ App\Http\Controllers\EventController::class, 'generate_qr']);
+    Route::post('/event-generate-qr', [App\Http\Controllers\EventController::class, 'generate_qr']);
     Route::get('/event-scan/{jeid}/{userid}/{eventid}', [App\Http\Controllers\EventController::class, 'event_scan_attendance'])->name('event.scan');
-
- 
 });
-
-

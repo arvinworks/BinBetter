@@ -11,7 +11,7 @@
                     <div class="mb-2 mb-lg-0">
                         <h3 class="mb-0  text-dark">{{ $page }}</h3>
                     </div>
-                    @if(in_array(Auth::user()->role, ['Resident', 'NGO']))
+                    @if(in_array(Auth::user()->role, ['Resident', 'NGO', 'LGU']))
                     <div>
                         <button class="btn btn-secondary btn-sm rounded-0" id="add-btn" data-modaltitle="Add">
                             Add <i class="bi bi-plus-square fs-4 ml-2"></i>

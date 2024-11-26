@@ -183,8 +183,7 @@ class EventController extends Controller
         $eventId = $request->input('event_id');
         $user = User::getCurrentUser();
 
-
-
+        // Check if the user has already joined the event
         $alreadyJoined = JoinEvent::where('user_id', $user->id)
             ->where('event_id', $eventId)
             ->exists();
@@ -196,17 +195,35 @@ class EventController extends Controller
             ], 200); // 200 OK response
         }
 
-        // Proceed to join the event
-        JoinEvent::create([
+        // Create the join event record
+        $joinEvent = JoinEvent::create([
             'user_id' => $user->id,
             'event_id' => $eventId,
         ]);
 
+        // Generate the QR code URL
+        $isLocalhost = in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']);
+        $protocol = $isLocalhost ? 'http://' : 'https://';
+        $host = $_SERVER['HTTP_HOST'];
+
+        $scanUrl = $protocol . $host . route('event.scan', [
+            'jeid' => $joinEvent->id,
+            'userid' => $user->id,
+            'eventid' => $eventId
+        ], false); // false to avoid duplicate host in URL
+
+        // Update the join event record with the QR code URL
+        $joinEvent->update([
+            'generate_qr' => $scanUrl
+        ]);
+
         return response()->json([
-            'message' => 'Joined successfully!',
-            'type' => 'success'
+            'message' => 'Joined successfully and QR code generated!',
+            'type' => 'success',
+            'qr_code_url' => $scanUrl
         ], 200);
     }
+
 
     public function event_attendance()
     {
@@ -227,6 +244,7 @@ class EventController extends Controller
                 'event' => $item->event->title ?? 'N/A',
                 'generateqr' => $item->generate_qr,
                 'timein' => $item->time_in,
+                'timeout' => $item->time_out,
                 'status' => $item->status,
                 'actions' =>
                 '<a class="generate-btn btn btn-primary-soft" href="javascript:void(0)" 
@@ -242,55 +260,46 @@ class EventController extends Controller
     }
 
 
-    public function generate_qr(Request $request)
-    {
-        // Get the current environment (localhost or production)
-        $isLocalhost = in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']);
-
-        // Determine the protocol
-        $protocol = $isLocalhost ? 'http://' : 'https://';
-
-        // Server host
-        $host = $_SERVER['HTTP_HOST'];
-
-        // Retrieve the IDs from the request
-        $joinEventId = $request->input('joineventId');
-        $userId = $request->input('userId');
-        $eventId = $request->input('eventId');
-
-        $getJoinEvent = JoinEvent::where('id', $joinEventId)->first();
-
-        if (!$getJoinEvent) {
-            return response()->json(['error' => 'Join event not found'], 404);
-        }
-
-        // Generate the URL for the QR code scan
-        $scanUrl = $protocol . $host . route('event.scan', [
-            'jeid' => $joinEventId,
-            'userid' => $userId,
-            'eventid' => $eventId
-        ], false); // false to avoid duplicate host in URL
-
-        $getJoinEvent->update([
-            'generate_qr' => $scanUrl
-        ]);
-
-        return response()->json([
-            'message' => 'QR code generated successfully!',
-            'type' => 'success'
-        ]);
-    }
 
     public function event_scan_attendance($jeid, $userid, $eventid)
     {
-        // Logic for handling event scan attendance
-        // You can validate the jeid, userid, and eventid, and mark attendance here
+        $joinEvent = JoinEvent::where('id', $jeid)
+            ->where('user_id', $userid)
+            ->where('event_id', $eventid)
+            ->first();
+
+        if (!$joinEvent) {
+            return response()->json([
+                'message' => 'Invalid QR code or event data.',
+                'type' => 'error',
+            ], 404);
+        }
+
+        $now = Carbon::now();
+
+        if (is_null($joinEvent->time_in)) {
+            // Log time in
+            $joinEvent->update(['time_in' => $now]);
+
+            return response()->json([
+                'message' => 'Time-in recorded successfully.',
+                'type' => 'success',
+                'time_in' => $now->toDateTimeString(),
+            ]);
+        } elseif (is_null($joinEvent->time_out)) {
+            // Log time out
+            $joinEvent->update(['time_out' => $now]);
+
+            return response()->json([
+                'message' => 'Time-out recorded successfully.',
+                'type' => 'success',
+                'time_out' => $now->toDateTimeString(),
+            ]);
+        }
 
         return response()->json([
-            'message' => 'Event scan successful!',
-            'join_event_id' => $jeid,
-            'user_id' => $userid,
-            'event_id' => $eventid
+            'message' => 'Attendance already completed.',
+            'type' => 'info',
         ]);
     }
 }

@@ -16,6 +16,7 @@ class JoinEvent extends Model
         'event_id',
         'generate_qr',
         'time_in',
+        'time_out',
         'status',
     ];
 

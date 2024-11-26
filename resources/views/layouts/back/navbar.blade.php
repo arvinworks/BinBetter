@@ -19,13 +19,11 @@
                     </li>
 
 
-                    @if(in_array(Auth::user()->role, ['Resident', 'NGO']))
+                    @if(in_array(Auth::user()->role, ['Resident', 'NGO', 'LGU']))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('subscription') }}" data-bs-display="static">Subscription</a>
                     </li>
                     @endif
-
-
 
                     @if(in_array(Auth::user()->role, ['Resident', 'NGO', 'LGU']))
 
@@ -61,6 +59,7 @@
                         <a class="nav-link" href="{{ route('event.attendance') }}" data-bs-display="static">Event Attendance</a>
                     </li>
                     @endif
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('garbage.index') }}" data-bs-display="static">Garbage Collection Schedule</a>
                     </li>
