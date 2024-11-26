@@ -88,6 +88,7 @@
 @endsection
 
 @push('scripts')
+
 <script>
     $(document).ready(function() {
         let tableId = 'dynamic-garbagetipsreport-table';
@@ -171,7 +172,16 @@
             scrollCollapse: true,
             scrollX: true,
             scrollY: 600,
+            rowCallback: function(row, data) {
+                // Hide the row if 'reportcount' is null or 0
+                if (!data.reportcount || data.reportcount === 0) {
+                    $(row).hide();
+                } else {
+                    $(row).show();
+                }
+            }
         });
+
 
         $(document).on('click', '.show-full-description', function(e) {
             e.preventDefault();

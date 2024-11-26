@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+// routes/web.php
+Route::get('/dashboard', [HomeController::class, 'showDashboard']);
 
 Route::get('/', [App\Http\Controllers\GuestController::class, 'welcome']);
 Route::get('/get-municipalities', [App\Http\Controllers\Auth\RegisterController::class, 'getMunicipalities']);

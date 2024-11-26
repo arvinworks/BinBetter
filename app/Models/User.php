@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\OTPVerifyEmail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -33,7 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'otp_code',
         'otp_expire',
         'isLogin',
-          'isDisable',
+        'isDisable',
     ];
 
     /**

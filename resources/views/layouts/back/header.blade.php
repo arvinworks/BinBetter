@@ -119,6 +119,16 @@
                         </div>
 
                         <ul class="list-unstyled">
+
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between" href="#!">
+                                    <span>
+                                        <i class="me-2 icon-xxs dropdown-item-icon text-primary" data-feather="award"></i>
+                                        Total Points
+                                    </span>
+                                    <span class="badge bg-success text-white">{{ $totalPoints }}</span>
+                                </a>
+                            </li>
                             <li>
                                 <a class="dropdown-item d-flex align-items-center" href="{{ route('generalsettings') }}#profile">
                                     <i class="me-2 icon-xxs dropdown-item-icon" data-feather="user"></i>
@@ -143,6 +153,9 @@
                                     @csrf
                                 </form>
                             </li>
+
+
+
                         </ul>
                     </div>
                 </li>

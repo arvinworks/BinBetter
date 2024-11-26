@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-
+        @if(Auth::user()->role === 'LGU')
         <!-- row  -->
         <div class="row mb-5">
             <div class="col-xl-12 col-12 mb-5">
@@ -86,7 +86,7 @@
 
             </div>
         </div>
-
+        @else
 
         <div class="col-xxl-12 col-lg-12 col-12 ">
             <div class="mt-6 mt-lg-0">
@@ -126,6 +126,7 @@
         @endcomponent
 
 
+        @endif
 
     </div>
 
