@@ -7,7 +7,7 @@ use App\Models\Event;
 use App\Models\JoinEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Carbon\Carbon; 
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -28,22 +28,22 @@ class EventController extends Controller
 
         return view('pages.back.v_event', compact('page', 'events'));
     }
-    
-    
+
+
     public function event_ngo()
     {
         $user = User::getCurrentUser();
-         $page = "Event Management";
+        $page = "Event Management";
         $events = Event::whereNull('deleted_at')
             ->with(['joinEvents' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }])
             ->get();
 
-        return view('pages.back.v_eventngo', compact('page','events'));
+        return view('pages.back.v_eventngo', compact('page', 'events'));
     }
-    
-    
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -158,7 +158,7 @@ class EventController extends Controller
             'location' => $request->location,
             'time' => $request->time,
             'capacity' => $request->capacity,
-            'status' => (empty($request->status) ? 'upcoming' : $request->status)  
+            'status' => (empty($request->status) ? 'upcoming' : $request->status)
         ]);
 
         return response()->json(['message' => 'Event updated successfully', 'type' => 'success']);
@@ -184,16 +184,6 @@ class EventController extends Controller
         $user = User::getCurrentUser();
 
 
-        $pendingEvent = JoinEvent::where('user_id', $user->id)
-        ->where('status', 'pending') 
-        ->exists();
-
-        if ($pendingEvent) {
-            return response()->json([
-                'message' => 'You already have a pending event. Please wait for approval before joining a new one.',
-                'type' => 'warning'
-            ], 200);
-        }
 
         $alreadyJoined = JoinEvent::where('user_id', $user->id)
             ->where('event_id', $eventId)
@@ -218,16 +208,17 @@ class EventController extends Controller
         ], 200);
     }
 
-    public function event_attendance(){
+    public function event_attendance()
+    {
 
         $page = "Event Attendance";
-       
-        return view('pages.back.v_eventattendance', compact('page'));
 
+        return view('pages.back.v_eventattendance', compact('page'));
     }
 
-    public function event_attendance_api(){
-        $joinevents = JoinEvent::with(['user','event'])->get();
+    public function event_attendance_api()
+    {
+        $joinevents = JoinEvent::with(['user', 'event'])->get();
 
         $formattedData = $joinevents->map(function ($item) {
             return [
@@ -267,12 +258,12 @@ class EventController extends Controller
         $userId = $request->input('userId');
         $eventId = $request->input('eventId');
 
-        $getJoinEvent = JoinEvent::where('id',$joinEventId)->first();
-         
-        if(!$getJoinEvent){
+        $getJoinEvent = JoinEvent::where('id', $joinEventId)->first();
+
+        if (!$getJoinEvent) {
             return response()->json(['error' => 'Join event not found'], 404);
         }
-    
+
         // Generate the URL for the QR code scan
         $scanUrl = $protocol . $host . route('event.scan', [
             'jeid' => $joinEventId,
@@ -281,7 +272,7 @@ class EventController extends Controller
         ], false); // false to avoid duplicate host in URL
 
         $getJoinEvent->update([
-           'generate_qr' => $scanUrl
+            'generate_qr' => $scanUrl
         ]);
 
         return response()->json([
@@ -294,7 +285,7 @@ class EventController extends Controller
     {
         // Logic for handling event scan attendance
         // You can validate the jeid, userid, and eventid, and mark attendance here
-        
+
         return response()->json([
             'message' => 'Event scan successful!',
             'join_event_id' => $jeid,

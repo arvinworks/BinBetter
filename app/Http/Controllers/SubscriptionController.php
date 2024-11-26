@@ -65,9 +65,12 @@ class SubscriptionController extends Controller
                     'subscription_price' => $subscriptionPrice,
                     // 'promotion' => $multiplierPromotion,
                     'status' => $subscription->status,
-                    'actions' => '<button class="btn btn-outline-dark approve-btn btn-sm" ' . ($subscription->status === 'Approved' ||  $subscription->status === 'Expired' ? 'disabled' : '') . ' href="javascript:void(0)" data-id="' . $subscription->id . '">
-                                    Approve <i class="bi bi-check-lg fs-5"></i>
-                                  </button>'
+                    'actions' => '<button class="btn btn-outline-primary approve-btn btn-sm" ' .
+                        ($subscription->status === 'Approved' || $subscription->status === 'Expired' || $subscription->status === 'Cancelled' ? 'disabled' : '') .
+                        ' href="javascript:void(0)" data-id="' . $subscription->id . '">
+                  Approve <i class="bi bi-check-lg fs-5"></i>
+              </button>'
+
                 ];
             });
         }

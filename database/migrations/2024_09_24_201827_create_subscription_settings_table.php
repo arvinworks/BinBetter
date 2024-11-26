@@ -18,6 +18,7 @@ class CreateSubscriptionSettingsTable extends Migration
             $table->string('subscription_type');
             $table->text('subscription_desc');
             $table->string('subscription_reward');
+            $table->string('subscription_price');
             $table->timestamps();
             $table->softDeletes();
         });

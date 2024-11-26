@@ -54,7 +54,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row mb-5">
             <div class="col-xl-12 col-12 mb-5">
                 <div class="card">
@@ -62,11 +61,13 @@
                         <h4 class="mb-0">Registered Users Count (Daily)</h4>
                     </div>
                     <div class="card-body">
+                        <h5>All Registered Users</h5>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Registered Users Count</th>
+                                    <th>Usernames</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,17 +75,99 @@
                                 <tr>
                                     <td>{{ $user->date }}</td>
                                     <td>{{ $user->count }}</td>
+                                    <td>{{ $user->names }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <h5>Female Users</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Registered Female Users Count</th>
+                                    <th>Usernames</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($registeredFemales as $female)
+                                <tr>
+                                    <td>{{ $female->date }}</td>
+                                    <td>{{ $female->count }}</td>
+                                    <td>{{ $female->names }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <h5>Male Users</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Registered Male Users Count</th>
+                                    <th>Usernames</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($registeredMales as $male)
+                                <tr>
+                                    <td>{{ $male->date }}</td>
+                                    <td>{{ $male->count }}</td>
+                                    <td>{{ $male->names }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <h5>Minor Users</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Registered Minor Users Count</th>
+                                    <th>Usernames</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($registeredMinors as $minor)
+                                <tr>
+                                    <td>{{ $minor->date }}</td>
+                                    <td>{{ $minor->count }}</td>
+                                    <td>{{ $minor->names }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <h5>Senior Users</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Registered Senior Users Count</th>
+                                    <th>Usernames</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($registeredSeniors as $senior)
+                                <tr>
+                                    <td>{{ $senior->date }}</td>
+                                    <td>{{ $senior->count }}</td>
+                                    <td>{{ $senior->names }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
 
                         <canvas id="registeredUsersChart"></canvas>
-
                     </div>
                 </div>
             </div>
         </div>
+
+
 
         <div class="row">
             <div class="col-xl-12 col-12 mb-5">
@@ -235,53 +318,67 @@
 
 
 <script>
-    const registeredUsers = JSON.parse('<?php echo json_encode($registeredUsers) ?>'); // Parse JSON string into JavaScript object
+    const registeredUsers = JSON.parse('<?php echo json_encode($registeredUsers) ?>');
+    const registeredFemales = JSON.parse('<?php echo json_encode($registeredFemales) ?>');
+    const registeredMales = JSON.parse('<?php echo json_encode($registeredMales) ?>');
+    const registeredMinors = JSON.parse('<?php echo json_encode($registeredMinors) ?>');
+    const registeredSeniors = JSON.parse('<?php echo json_encode($registeredSeniors) ?>');
 
-    // Prepare data for the chart
-    const labelss = registeredUsers.map(user => user.date); // Use the registration dates as labels
-    const datas = registeredUsers.map(user => user.count); // Use the count of users for data
+    const labelsuser = registeredUsers.map(user => user.date); // Date labels
+    const usersCount = registeredUsers.map(user => user.count); // Registered Users count
+    const femalesCount = registeredFemales.map(user => user.count); // Female Users count
+    const malesCount = registeredMales.map(user => user.count); // Male Users count
+    const minorsCount = registeredMinors.map(user => user.count); // Minor Users count
+    const seniorsCount = registeredSeniors.map(user => user.count); // Senior Users count
 
     // Create the chart
-    const ctxs = document.getElementById('registeredUsersChart').getContext('2d');
-    const registeredUsersChart = new Chart(ctxs, {
+    const ctxuser = document.getElementById('registeredUsersChart').getContext('2d');
+    const registeredUsersChart = new Chart(ctxuser, {
         type: 'bar',
         data: {
-            labels: labelss,
+            labels: labelsuser,
             datasets: [{
-                label: 'Registered Users (Daily)',
-                data: datas,
-                backgroundColor: events.length ? 'rgba(54, 162, 235, 0.9)' : 'rgba(200, 200, 200, 0.5)',
+                label: 'Registered Users',
+                data: usersCount,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                barPercentage: 0.1,
-                categoryPercentage: 0.7
+                borderWidth: 1
+            }, {
+                label: 'Female Users',
+                data: femalesCount,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Male Users',
+                data: malesCount,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Minor Users',
+                data: minorsCount,
+                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Senior Users',
+                data: seniorsCount,
+                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
             plugins: {
                 legend: {
                     display: true
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return tooltipItem.raw + ' users';
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    }
-                }
-            },
-            elements: {
-                bar: {
-                    barThickness: 30,
                 }
             }
         }

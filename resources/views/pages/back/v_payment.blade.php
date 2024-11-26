@@ -26,15 +26,15 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="mb-0">
-                               List of payment data.
+                                List of payment data.
                             </h4>
                         </div>
                         <div>
-                           
+
                             <button class="btn btn-primary-soft btn-sm rounded-0" id="add-btn" data-modaltitle="Add">
                                 Pay <i class="bi bi-plus-square fs-4 ml-2"></i>
                             </button>
-                           
+
                         </div>
                     </div>
                     <!-- table  -->
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-       @component('components.modal', [
+        @component('components.modal', [
         'modalId' => 'paymentModal',
         'title' => 'Gcash Payment',
         'confirmCloseHide' => 'No',
@@ -56,7 +56,7 @@
         ])
         <x-form formId="payment-form" actionUrl="" method="">
 
-           
+
 
             <input type="hidden" id="gcash_id" name="gcash_id" value="{{ $gcash->id ?? 0 }}" />
 
@@ -70,13 +70,13 @@
 
             <x-input type="file" name="proof_payment" id="proof_payment" label="Upload Proof payment:" />
 
-         
+
 
         </x-form>
         @endcomponent
-        
-        
-        
+
+
+
         @component('components.modal', [
         'modalId' => 'paymentImageModal',
         'title' => 'Proof Payment',
@@ -84,7 +84,7 @@
         'confirmText' => '',
         'confirmButtonId' => ''
         ])
-       <div id="showImage"> </div>
+        <div id="showImage"> </div>
         @endcomponent
 
 
@@ -98,9 +98,7 @@
 <script src="{{ route('secure.js', ['filename' => 'payments']) }}"></script>
 
 <script>
-     const isAdmin = @json($isAdmin);
+    const isAdmin = @json($isAdmin);
 </script>
 
 @endpush
-
-

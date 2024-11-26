@@ -98,11 +98,11 @@
 
 
                     <div id="garbage_container" class="d-none">
-                         <div>
-                        <x-input type="file" name="photo[]" id="photo" label="Photo:" multiple />
-                          <span class="invalid-feedback d-block" role="alert" id="photo_error"></span>
-                         </div>
-                         
+                        <div>
+                            <x-input type="file" name="photo[]" id="photo" label="Photo:" multiple />
+                            <span class="invalid-feedback d-block" role="alert" id="photo_error"></span>
+                        </div>
+
                         <x-input type="text" name="video_url" id="video_url" label="Video URL:" />
                         <x-select name="address" id="address" label="Address" :selected="old('address')" placeholder="Select an address" />
                         <x-textarea name="description" id="description" label="Description" placeholder="Enter report description" :value="old('description')" rows="5" />
@@ -112,6 +112,7 @@
                     <div id="recycled_container" class="d-none">
 
                         <x-input type="file" name="photo[]" id="re_photo" label="Photo:" multiple />
+                        <span class="invalid-feedback d-block" role="alert" id="re_photo_error"></span>
                         <x-textarea name="description" id="re_description" label="Description" placeholder="Enter report description" :value="old('description')" rows="5" />
 
                     </div>
@@ -137,6 +138,53 @@
 
     </div>
 </div>
+
+
+<script>
+    document.getElementById('photo').addEventListener('change', function(event) {
+        const allowedExtensions = ['image/jpeg', 'image/png']; // Allowed MIME types (JPG, PNG)
+        const files = event.target.files;
+        let valid = true;
+        let errorMessage = '';
+
+        for (let i = 0; i < files.length; i++) {
+            if (!allowedExtensions.includes(files[i].type)) {
+                valid = false;
+                errorMessage = 'Only PNG and JPG files are allowed.';
+                break;
+            }
+        }
+
+        if (!valid) {
+            document.getElementById('photo_error').textContent = errorMessage;
+            event.target.value = ''; // Clear the selected file(s)
+        } else {
+            document.getElementById('photo_error').textContent = ''; // Clear error message if valid
+        }
+    });
+
+    document.getElementById('re_photo').addEventListener('change', function(event) {
+        const allowedExtensions = ['image/jpeg', 'image/png']; // Allowed MIME types (JPG, PNG)
+        const files = event.target.files;
+        let valid = true;
+        let errorMessage = '';
+
+        for (let i = 0; i < files.length; i++) {
+            if (!allowedExtensions.includes(files[i].type)) {
+                valid = false;
+                errorMessage = 'Only PNG and JPG files are allowed.';
+                break;
+            }
+        }
+
+        if (!valid) {
+            document.getElementById('re_photo_error').textContent = errorMessage;
+            event.target.value = ''; // Clear the selected file(s)
+        } else {
+            document.getElementById('re_photo_error').textContent = ''; // Clear error message if valid
+        }
+    });
+</script>
 @endsection
 
 @push('scripts')

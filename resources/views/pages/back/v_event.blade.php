@@ -70,9 +70,9 @@
                         </div>
 
                         <div class="col-12">
-                            
+
                             <x-input type="time" name="time" id="time" label="Time:" value="{{ old('time') }}" placeholder="Enter event time" />
-                              
+
 
                             <x-input type="number" name="capacity" id="capacity" label="Capacity:" value="{{ old('capacity') }}" placeholder="Enter event capacity" />
 
@@ -98,7 +98,7 @@
         </div>
 
     </div>
-     @elseif(in_array(Auth::user()->role, ['NGO']))
+    @elseif(in_array(Auth::user()->role, ['NGO']))
     <div class="container-fluid mt-5">
 
         <div class="row align-items-center">

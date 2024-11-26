@@ -166,7 +166,7 @@ class PostReportController extends Controller
         // Validate incoming request data
         $request->validate([
             'type' => 'required|string',
-            //'photo.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'photo.*' => 'mimes:jpeg,png|max:10240',  // Validate each photo to be either JPG or PNG and max size of 10MB
             'video_url' => 'nullable|url|regex:/^https:\/\//', // Ensure URL starts with https
             'address' => 'required_if:type,Garbage', // Validate address only if type is Garbage
             'description' => 'required'

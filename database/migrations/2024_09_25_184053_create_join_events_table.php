@@ -19,9 +19,9 @@ class CreateJoinEventsTable extends Migration
             $table->unsignedBigInteger('event_id');
             $table->string('generate_qr')->nullable();
             $table->timestamp('time_in')->nullable();
-            $table->enum('status', ['Pending', 'Approved'])->default('Pending');
+            $table->enum('status', ['Pending', 'Approved'])->default('Approved');
             $table->timestamps();
-        
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
         });

@@ -122,12 +122,44 @@ class HomeController extends Controller
             ->get();
 
         $registeredUsers = User::whereNull('deleted_at')
-            ->selectRaw('DATE(created_at) as date, count(*) as count')
+            ->selectRaw('DATE(created_at) as date, count(*) as count, GROUP_CONCAT(username) as names')
             ->groupBy('date')
             ->orderBy('date', 'desc')
             ->get();
 
-        return view('pages.back.v_analytics', compact('page', 'ongoingEvents', 'registeredUsers', 'cleanedAddresses', 'uncleanedAddresses'));
+        $registeredFemales = User::whereNull('deleted_at')
+            ->where('gender', 'Female')
+            ->selectRaw('DATE(created_at) as date, count(*) as count, GROUP_CONCAT(username) as names')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // Registered male users count (with usernames)
+        $registeredMales = User::whereNull('deleted_at')
+            ->where('gender', 'Male')
+            ->selectRaw('DATE(created_at) as date, count(*) as count, GROUP_CONCAT(username) as names')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // Registered minor users count (with usernames)
+        $registeredMinors = User::whereNull('deleted_at')
+            ->where('age', '<', 18)
+            ->selectRaw('DATE(created_at) as date, count(*) as count, GROUP_CONCAT(username) as names')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // Registered senior users count (with usernames)
+        $registeredSeniors = User::whereNull('deleted_at')
+            ->where('age', '>=', 60)
+            ->selectRaw('DATE(created_at) as date, count(*) as count, GROUP_CONCAT(username) as names')
+            ->groupBy('date')
+            ->orderBy('date', 'desc')
+            ->get();
+
+
+        return view('pages.back.v_analytics', compact('page', 'ongoingEvents', 'registeredMinors', 'registeredSeniors', 'registeredMales', 'registeredFemales', 'registeredUsers', 'cleanedAddresses', 'uncleanedAddresses'));
     }
 
     public function view_notification()

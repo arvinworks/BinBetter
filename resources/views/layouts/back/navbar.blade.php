@@ -28,7 +28,7 @@
 
 
                     @if(in_array(Auth::user()->role, ['Resident', 'NGO', 'LGU']))
-                    
+
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('subscription.reward') }}" data-bs-display="static">Daily Rewards</a>
@@ -37,29 +37,30 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('postreport.index') }}" data-bs-display="static">Post Report</a>
                     </li>
-             
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('message.index') }}" data-bs-display="static">Messages</a>
                     </li>
-                    
+
                     @if(in_array(Auth::user()->role, ['NGO']))
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('event-ngo') }}" data-bs-display="static">
-                           Events
+                            Events
                         </a>
                     </li>
                     @endif
-                   
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('event.index') }}" data-bs-display="static">
                             {{ Auth::user()->role === 'NGO' ? 'Event Management' : 'Events' }}
                         </a>
                     </li>
+                    @if(in_array(Auth::user()->role, ['NGO','Superadmin']))
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('event.attendance') }}" data-bs-display="static">Event Attendance</a>
                     </li>
-
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('garbage.index') }}" data-bs-display="static">Garbage Collection Schedule</a>
                     </li>
@@ -67,14 +68,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('garbagetip.index') }}" data-bs-display="static">Garbage Tips</a>
                     </li>
-                    
-                      @if(in_array(Auth::user()->role, ['LGU']))
-                      <li class="nav-item">
+
+                    @if(in_array(Auth::user()->role, ['LGU']))
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('analytics') }}" data-bs-display="static">Analytics</a>
                     </li>
                     @endif
-                    
-                  
+
+
 
                     @endif
 
@@ -102,14 +103,14 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('event.index') }}" data-bs-display="static">
-                           Event Management
+                            Event Management
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('garbage.index') }}" data-bs-display="static">Garbage Schedule</a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('garbagetip.index') }}" data-bs-display="static">Garbage Tips</a>
                     </li>
@@ -133,14 +134,14 @@
                             <li><a class="dropdown-item" href="{{ route('generalsettings') }}">General Settings</a></li>
                             <li><a class="dropdown-item" href="{{ route('subscriptionsettings.index') }}">Subscription Settings</a></li>
                             <li><a class="dropdown-item" href="#">Ads Management Settings</a></li>
-                            
-                             <li><a class="dropdown-item" href="{{ route('gcash.index') }}">Gcash Settings</a></li>
-            
+
+                            <li><a class="dropdown-item" href="{{ route('gcash.index') }}">Gcash Settings</a></li>
+
                         </ul>
                     </li>
                     @endif
-                    
-                      <li class="nav-item">
+
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('payment.index') }}" data-bs-display="static">Payment</a>
                     </li>
 
