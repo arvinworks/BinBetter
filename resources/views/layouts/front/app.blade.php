@@ -53,10 +53,10 @@
 
 <body>
 
-    <!--     <div class="preloader">
+    <div class="preloader">
         <img class="preloader__image" width="60" src="{{ asset('assets/front/images/loader.png') }}" alt="" />
-    </div> -->
-    <!-- /.preloader -->
+    </div>
+
 
     <div class="page-wrapper">
 
