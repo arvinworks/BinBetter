@@ -107,6 +107,8 @@ class EventController extends Controller
             'time' => 'required',
         ]);
 
+        $status = $request->status ?? 'upcoming';
+
         Event::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -115,7 +117,7 @@ class EventController extends Controller
             'location' => $request->location,
             'time' => $request->time,
             'capacity' => $request->capacity,
-            'status' => $request->status,
+            'status' => $status,
         ]);
 
         return response()->json([
@@ -290,10 +292,14 @@ class EventController extends Controller
             // Log time out
             $joinEvent->update(['time_out' => $now]);
 
+            // After successful time-out, claim the reward (10 points)
+            $joinEvent->update(['claimed_rewards' => '10']);
+
             return response()->json([
-                'message' => 'Time-out recorded successfully.',
+                'message' => 'Time-out recorded successfully. 10 points claimed.',
                 'type' => 'success',
                 'time_out' => $now->toDateTimeString(),
+                'claimed_rewards' => '10',
             ]);
         }
 

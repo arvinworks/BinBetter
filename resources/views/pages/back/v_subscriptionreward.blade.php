@@ -39,7 +39,7 @@
                                 </p>
                             </div>
                             <div class="border-start w-50 p-0">
-                               
+
                                 <button type="button" data-date="{{ $claimableDate['date'] }}" data-expId="{{ $claimableDate['expiration_id'] }}"
                                     class="btn btn-primary w-100 h-100 fw-bold rounded-0 fs-4 claim-btn {{ $claimableDate['claimed'] ? 'd-none' : ''}}"
                                     @if($today !==\Carbon\Carbon::parse($claimableDate['date'])->format('Y-m-d') || $claimableDate['claimed'])
@@ -47,7 +47,7 @@
                                     @endif>
                                     Claim
                                 </button>
-                               
+
                             </div>
                         </div>
                     </div>
@@ -85,8 +85,8 @@
                 if (response.success) {
                     toast('success', response.message)
 
-                    setTimeout(function(){
-                       location.reload();
+                    setTimeout(function() {
+                        location.reload();
                     }, 3000)
 
                     button.text('Claimed').prop('disabled', true);
