@@ -77,25 +77,25 @@ class GarbageTipsController extends Controller
 
     public function comment_api()
     {
+        // Retrieve all garbage tips with related data
         $posts_garbagetip = GarbageTip::with([
-            'user',
-            'garbage_reports',
-            'post_garbagetip_comments.user',
-            'post_garbagetip_comments.replies_garbagetip',
-            'post_garbagetip_comments.replies_garbagetip.user'
-        ])
-            ->whereHas('garbage_reports', function ($query) {
-                $query->where('report_status', 0);
-            })
-            ->orWhereDoesntHave('garbage_reports')
-            ->get();
+            'user', // Get the user who posted the garbage tip
+            'garbage_reports', // Get associated garbage reports
+            'post_garbagetip_comments.user', // Get the user who commented on the garbage tip
+            'post_garbagetip_comments.replies_garbagetip', // Get the replies to each comment
+            'post_garbagetip_comments.replies_garbagetip.user' // Get the user who replied to the comments
+        ])->get(); // Use `get()` to fetch the data
 
-        if ($posts_garbagetip) {
-            return response()->json(['posts_garbagetip' =>  $posts_garbagetip]);
+        if ($posts_garbagetip->isNotEmpty()) {
+            // Return the fetched data in JSON format
+            return response()->json(['posts_garbagetip' => $posts_garbagetip]);
         } else {
-            return response()->json(['error' => 'Post garbage tip not found'], 404);
+            // Return an error if no garbage tips are found
+            return response()->json(['error' => 'No garbage tips found'], 404);
         }
     }
+
+
 
     public function comment_garbagetip(Request $request)
     {

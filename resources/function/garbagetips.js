@@ -390,121 +390,96 @@ $(document).ready(function () {
 
                         // Create the structure for each tutorial
                         $(".garbage-tip-list").append(`
-    <div class="tutorial-item" data-tutorialid="${tutorial.id}">
-        <div class="row">
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-danger mb-2 rounded-pill report-content" data-tutorialid="${
-                    tutorial.id
-                }">Report</button>
-            </div>
-            <div class="col-xxl-6">
-                <div class="row">
-                    <div class="col-xxl-3">
-                        <!-- Main Image -->
-                        <img src="${
-                            tutorial.photos.split(",")[0]
-                        }" style="object-fit:cover;width:100%;height:auto;" alt="Main Image">
-
-                        <!-- Additional Images -->
-                        <div class="row mt-3">
-                            ${tutorial.photos
-                                .split(",")
-                                .slice(1)
-                                .map(
-                                    (photo) => `
-                                        <div class="col-4 mb-2">
-                                            <img src="${photo}" class="img-fluid" style="object-fit:cover;width:100%;height:auto;" alt="Additional Image">
+                    <div class="tutorial-item" data-tutorialid="${tutorial.id}">
+                        <div class="row">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-danger mb-2 rounded-pill report-content" data-tutorialid="${
+                                    tutorial.id
+                                }">Report</button>
+                            </div>
+                            <div class="col-xxl-6">
+                                <div class="row">
+                                    <div class="col-xxl-3">
+                                        <img src="${
+                                            tutorial.photos.split(",")[0]
+                                        }" style="object-fit:cover;width:100%;height:auto;" alt="Main Image">
+                                        <div class="row mt-3">
+                                            ${tutorial.photos
+                                                .split(",")
+                                                .slice(1)
+                                                .map(
+                                                    (photo) => `
+                                                <div class="col-4 mb-2">
+                                                    <img src="${photo}" class="img-fluid" style="object-fit:cover;width:100%;height:auto;" alt="Additional Image">
+                                                </div>
+                                            `
+                                                )
+                                                .join("")}
                                         </div>
-                                    `
-                                )
-                                .join("")}
-                        </div>
-                    </div>
+                                    </div>
 
-                    <div class="col-xxl-9">
-                        <!-- Video Section -->
-                        ${
-                            isYouTubeURL(tutorial.video)
-                                ? `<iframe class="datatable-video" style="object-fit:cover;width:100%;height:100%;" src="https://www.youtube.com/embed/${extractYouTubeVideoId(
-                                      tutorial.video
-                                  )}" frameborder="0" allowfullscreen></iframe>`
-                                : `<video class="datatable-video" width="300" height="240" controls>
-                                    <source src="${tutorial.video}" type="application/x-mpegURL">
-                                    Your browser does not support the video tag.
-                                  </video>`
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xxl-6">
-                <!-- Tutorial Description -->
-                <div class="mt-3">
-                    ${tutorial.description}
-                </div>
-
-                <!-- Title and Date Posted -->
-                <div class="d-flex justify-content-between mt-3">
-                    <div>
-                        <h4 class="fw-bolder">${tutorial.title}</h4>
-                    </div>
-                    <div>
-                        <p><b>Date Posted:</b> <i>${tutorialTimeAgo}</i></p>
-                    </div>
-                </div>
-
-                <!-- Share and React Buttons -->
-                <div class="mt-3 d-flex justify-content-start align-items-center gap-2">
-                    <button class="btn btn-outline-primary btn-sm share-button" data-tutorialid="${
-                        tutorial.id
-                    }">
-                        <i class="bi bi-share"></i> Share
-                    </button>
-                    <button class="btn btn-outline-success btn-sm react-button" data-tutorialid="${
-                        tutorial.id
-                    }">
-                        <i class="bi bi-hand-thumbs-up"></i> React (<span class="react-count">0</span>)
-                    </button>
-                </div>
-            </div>
-
-            <div class="col-xxl-12 mt-3">
-                <div class="mb-5 hstack gap-3 align-items-center">
-                    <div class="fs-5 comment-count">${
-                        topLevelComments.length
-                    } Comments</div>
-                </div>
-
-                <div class="comment-box">
-                    <div class="d-flex comment">
-                        <div class="flex-grow-1 ms-3">
-                            <div class="form-floating comment-compose mb-2">
-                                <textarea class="form-control w-100 new-comment-${
-                                    tutorial.id
-                                }" placeholder="Leave a comment here" style="height:2rem;"></textarea>
-                                <label for="new-comment">Leave a comment here</label>
+                                    <div class="col-xxl-9">
+                                        ${
+                                            tutorial.video
+                                                ? `
+                                            <iframe class="datatable-video" style="object-fit:cover;width:100%;height:100%;" src="https://www.youtube.com/embed/${extractYouTubeVideoId(
+                                                tutorial.video
+                                            )}" frameborder="0" allowfullscreen></iframe>
+                                        `
+                                                : ""
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                            <div class="hstack justify-content-end gap-1">
-                                <button class="btn btn-sm btn-secondary rounded-pill cancel-comment" data-tutorialid="${
+
+                            <div class="col-xxl-6">
+                                <div class="mt-3">${tutorial.description}</div>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <div><h4 class="fw-bolder">${
+                                        tutorial.title
+                                    }</h4></div>
+                                    <div><p><b>Date Posted:</b> <i>${tutorialTimeAgo}</i></p></div>
+                                </div>
+                            </div>
+
+                            <div class="col-xxl-12 mt-3">
+                                <div class="mb-5 hstack gap-3 align-items-center">
+                                    <div class="fs-5 comment-count">${
+                                        tutorial.post_garbagetip_comments.length
+                                    } Comments</div>
+                                </div>
+
+                                <div class="comment-box">
+                                    <div class="d-flex comment">
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="form-floating comment-compose mb-2">
+                                                <textarea class="form-control w-100 new-comment-${
+                                                    tutorial.id
+                                                }" placeholder="Leave a comment here" style="height:2rem;"></textarea>
+                                                <label for="new-comment">Leave a comment here</label>
+                                            </div>
+                                            <div class="hstack justify-content-end gap-1">
+                                                <button class="btn btn-sm btn-secondary rounded-pill cancel-comment" data-tutorialid="${
+                                                    tutorial.id
+                                                }">Cancel</button>
+                                                <button class="btn btn-sm btn-primary rounded-pill tutorial-comment" data-tutorialid="${
+                                                    tutorial.id
+                                                }">Comment</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="comment-list vstack gap-4" id="comment-list-${
                                     tutorial.id
-                                }">Cancel</button>
-                                <button class="btn btn-sm btn-primary rounded-pill tutorial-comment" data-tutorialid="${
-                                    tutorial.id
-                                }">Comment</button>
+                                }">
+                                  
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="comment-list vstack gap-4" id="comment-list-${
-                    tutorial.id
-                }"></div>
-            </div>
-        </div>
-        <hr>
-    </div>
-`);
-
+                    <hr>
+                `);
                         $(document).ready(function () {
                             // When the button is clicked
                             $(".report-content").click(function () {
