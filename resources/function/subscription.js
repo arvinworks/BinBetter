@@ -131,10 +131,18 @@ $(document).ready(function () {
 
                         if (isUserSubscribed) {
                             subscriptionStatus =
-                                subscription.subscriptions[0].status;
+                                userSubscriptions.find(
+                                    (userSub) =>
+                                        userSub.subscription_setting.id ===
+                                        subscription.id
+                                )?.status || "Unknown";
+                        } else if (Array.isArray(subscription.subscriptions)) {
+                            subscriptionStatus =
+                                subscription.subscriptions[0]?.status ||
+                                "Unknown";
                         } else {
                             subscriptionStatus =
-                                subscription.subscriptions.status;
+                                subscription.subscriptions?.status || "Unknown";
                         }
 
                         switch (subscriptionStatus) {

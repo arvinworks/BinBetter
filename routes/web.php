@@ -88,6 +88,7 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     Route::resource('managereward', App\Http\Controllers\RewardManagementController::class);
     Route::resource('comment', App\Http\Controllers\CommentController::class);
     Route::post('/comment/{action}/{commentId}', [App\Http\Controllers\CommentController::class, 'handleLikeDislike']);
+    Route::delete('/garbages/comments/{commentId}', [App\Http\Controllers\GarbageTipsController::class, 'destroyComment']);
 
     Route::resource('gcash', App\Http\Controllers\GcashSettingsController::class);
     Route::post('gcash-switch', [App\Http\Controllers\GcashSettingsController::class, 'switch_status']);

@@ -27,7 +27,11 @@ class PostReportController extends Controller
      */
     public function create()
     {
-        $postGarbageReport = PostReport::where('type', 'Garbage')->whereNull('deleted_at')->get();
+        // Fetching Garbage Reports for the logged-in user
+        $postGarbageReport = PostReport::where('type', 'Garbage')
+            ->whereNull('deleted_at')
+            ->where('resident_id', auth()->user()->id) // Ensure only reports created by the logged-in user are fetched
+            ->get();
 
         $formattedGarbageData = $postGarbageReport->map(function ($item) {
             $actions = '';
@@ -50,17 +54,15 @@ class PostReportController extends Controller
                     // LGU user: show status button if status is pending, otherwise show '--'
                     $actions = $item->status === 'Pending'
                         ? '<button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="approve">
-                   Accept <i class="bi bi-check fs-5"></i>
-               </button>   
-               <button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="reject">
-                  Reject <i class="bi bi-x fs-5"></i>
-               </button>'
+                           Accept <i class="bi bi-check fs-5"></i>
+                       </button>   
+                       <button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="reject">
+                          Reject <i class="bi bi-x fs-5"></i>
+                       </button>'
                         : '--';
                 } else {
-                    $residentPostreports = \App\Models\PostReport::where('resident_id', $user->id)->exists();
-
-                    if ($residentPostreports) {
-                        $actions = '<a class="edit-btn" href="javascript:void(0)" 
+                    // Non-LGU user: show edit and delete buttons
+                    $actions = '<a class="edit-btn" href="javascript:void(0)" 
                            data-id="' . $item->id . '"
                            data-type="' . htmlspecialchars($item->type, ENT_QUOTES, 'UTF-8') . '"
                            data-address="' . htmlspecialchars($item->address, ENT_QUOTES, 'UTF-8') . '"
@@ -73,12 +75,8 @@ class PostReportController extends Controller
                         <a class="delete-btn" href="javascript:void(0)" data-id="' . $item->id . '">
                            <i class="bi bi-trash fs-3"></i>
                         </a>';
-                    } else {
-                        $actions = 'Not right to access this post report';
-                    }
                 }
             }
-
 
             // Return formatted item data with actions
             return [
@@ -92,8 +90,11 @@ class PostReportController extends Controller
             ];
         });
 
-
-        $postRecycledReport = PostReport::where('type', 'Recycled')->whereNull('deleted_at')->get();
+        // Fetching Recycled Reports for the logged-in user
+        $postRecycledReport = PostReport::where('type', 'Recycled')
+            ->whereNull('deleted_at')
+            ->where('resident_id', auth()->user()->id) // Ensure only reports created by the logged-in user are fetched
+            ->get();
 
         $formattedRecycledData = $postRecycledReport->map(function ($item) {
             $actions = '';
@@ -116,7 +117,6 @@ class PostReportController extends Controller
                         ? '<button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="approve">
                            Accept <i class="bi bi-check fs-5"></i>
                        </button>   
-                       
                        <button class="status-btn btn btn-primary-soft btn-sm pt-1 pb-1" data-id="' . $item->id . '" data-type="reject">
                           Reject <i class="bi bi-x fs-5"></i>
                        </button>'
@@ -151,8 +151,10 @@ class PostReportController extends Controller
             ];
         });
 
+        // Return the formatted data as JSON
         return response()->json(['data_garbage' => $formattedGarbageData, 'data_recycled' => $formattedRecycledData]);
     }
+
 
 
     /**

@@ -7,6 +7,7 @@ use App\Models\PostComment;
 use App\Models\PostReport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
@@ -17,7 +18,7 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = PostComment::with(['resident','replies.resident']) 
+        $comments = PostComment::with(['resident', 'replies.resident'])
             ->whereNull('parent_id')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -109,8 +110,25 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // Check if the ID is valid
+        dd($id); // Dump the ID to see what you're getting
+
+        // Find the comment by ID
+        $comment = PostComment::find($id);
+
+        // Check if the comment exists
+        if (!$comment) {
+            // Log the error to help debugging
+            Log::info("Comment with ID {$id} not found.");
+            return response()->json(['error' => 'Comment not found'], 404);
+        }
+
+        // Delete the comment
+        $comment->delete();
+
+        return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
     }
+
 
     public function handleLikeDislike($action, $commentId)
     {

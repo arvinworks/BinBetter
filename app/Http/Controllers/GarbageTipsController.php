@@ -8,6 +8,7 @@ use App\Models\ReportGarbageTip;
 use App\Models\GarbageTip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class GarbageTipsController extends Controller
 {
@@ -269,5 +270,24 @@ class GarbageTipsController extends Controller
         $garbagetip->delete();
 
         return response()->json(['message' => 'Garbage tip deleted successfully', 'type' => 'success']);
+    }
+    public function destroyComment($commentId)
+    {
+        $comment = PostGarbageTipComment::find($commentId);
+
+        if (!$comment) {
+            Log::info('Comment not found for ID: ' . $comment->id);
+
+            return response()->json(['success' => false, 'message' => 'Comment not found'], 404);
+        }
+
+        // Check if the user is authorized to delete this comment
+        if (auth()->user()->id !== $comment->user_id && !auth()->user()->is_admin) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized to delete this comment'], 403);
+        }
+
+        $comment->forceDelete();
+
+        return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
     }
 }

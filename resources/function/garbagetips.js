@@ -168,8 +168,47 @@ $(document).ready(function () {
         $("#descriptionModal").modal("show");
     });
 
+    function removeGarbageTip(id) {
+        console.log("Deleting comment with ID: " + id); // Check the ID passed
+        $.ajax({
+            url: "/delete-comment/" + id, // Make sure this URL is correct
+            method: "DELETE",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token if needed
+            },
+            success: function (response) {
+                console.log(response); // Check the response from the server
+                if (response.success) {
+                    Swal.fire(
+                        "Deleted!",
+                        "Your comment has been deleted.",
+                        "success"
+                    );
+                    // Optionally, remove the comment from the DOM
+                    $(`#comment-${id}`).remove();
+                } else {
+                    Swal.fire(
+                        "Error!",
+                        "There was an issue deleting your comment.",
+                        "error"
+                    );
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete request failed: ", error);
+                Swal.fire(
+                    "Error!",
+                    "There was an issue deleting your comment.",
+                    "error"
+                );
+            },
+        });
+    }
+
     $(document).on("click", ".delete-btn", function () {
-        let id = $(this).data("id");
+        let id = $(this).data("id"); // Retrieves the comment's ID stored in the data-id attribute.
+
+        console.log("Delete button clicked for comment ID: " + id); // Check the ID retrieved
 
         Swal.fire({
             title: "Are you sure?",
@@ -183,10 +222,44 @@ $(document).ready(function () {
             allowEscapeKey: false,
         }).then((result) => {
             if (result.isConfirmed) {
-                removeGarbageTip(id);
+                removeGarbageTip(id); // Proceed with deletion by passing the ID
             }
         });
     });
+
+    function removeGarbageTip(id) {
+        $.ajax({
+            url: "/garbages/comments/" + id, // Make sure this URL matches the new route defined above
+            method: "DELETE",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"), // Include CSRF token
+            },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire(
+                        "Deleted!",
+                        "Your comment has been deleted.",
+                        "success"
+                    );
+                    $(`#comment-${id}`).remove(); // Remove the comment from DOM
+                } else {
+                    Swal.fire(
+                        "Error!",
+                        "There was an issue deleting your comment.",
+                        "error"
+                    );
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete request failed: ", error);
+                Swal.fire(
+                    "Error!",
+                    "There was an issue deleting your comment.",
+                    "error"
+                );
+            },
+        });
+    }
 
     $(document).on("click", ".show-full-description", function (e) {
         e.preventDefault();
@@ -450,17 +523,19 @@ $(document).ready(function () {
                             });
                         });
                         $(document).ready(function () {
-                            // When the button is clicked
-                            $(".tutorial-comment").click(function () {
-                                // Get the tutorial ID from the button's data attribute
-                                const tutorialID =
-                                    $(this).attr("data-tutorialid");
-                                const replyToID = $(this).attr("data-replyid");
-                                const comment = $(
-                                    `.new-comment-${tutorialID}`
-                                ).val();
-                                sendComment(tutorialID, replyToID, comment);
-                            });
+                            // Unbind any previously bound click events before attaching the new one
+                            $(".tutorial-comment")
+                                .off("click")
+                                .on("click", function () {
+                                    const tutorialID =
+                                        $(this).attr("data-tutorialid");
+                                    const replyToID =
+                                        $(this).attr("data-replyid");
+                                    const comment = $(
+                                        `.new-comment-${tutorialID}`
+                                    ).val();
+                                    sendComment(tutorialID, replyToID, comment);
+                                });
                         });
 
                         // Event listeners for the Share and React buttons
@@ -477,38 +552,29 @@ $(document).ready(function () {
                                 });
                         });
 
-                        $(document).on("click", ".react-button", function () {
-                            const $button = $(this);
-                            const $countSpan = $button.find(".react-count");
-                            let currentCount = parseInt($countSpan.text(), 10);
+                        $(document)
+                            .off("click", ".react-button")
+                            .on("click", ".react-button", function () {
+                                const $button = $(this);
+                                const $countSpan = $button.find(".react-count");
+                                let currentCount = parseInt(
+                                    $countSpan.text(),
+                                    10
+                                );
 
-                            // Increment the count
-                            currentCount++;
-                            $countSpan.text(currentCount);
+                                // Ensure the count is a valid number
+                                if (isNaN(currentCount)) {
+                                    currentCount = 0; // Reset to 0 if it's not a valid number
+                                }
 
-                            // Optionally send the updated count to the server (Ajax call)
-                            const tutorialId = $button.data("tutorialid");
-                            $.ajax({
-                                url: "/update-reaction",
-                                type: "POST",
-                                data: {
-                                    tutorial_id: tutorialId,
-                                    reactions: currentCount,
-                                },
-                                success: (response) => {
-                                    console.log(
-                                        "Reaction count updated successfully:",
-                                        response
-                                    );
-                                },
-                                error: (error) => {
-                                    console.error(
-                                        "Error updating reaction count:",
-                                        error
-                                    );
-                                },
+                                // Increment the count by 1
+                                currentCount++;
+
+                                // Update the displayed count
+                                $countSpan.text(currentCount);
+
+                                console.log("Button clicked"); // Check that it's logged once
                             });
-                        });
 
                         // Render comments specific to the current tutorial
                         const commentContainer = $(
@@ -633,9 +699,10 @@ $(document).ready(function () {
                                                     <button class="btn btn-sm btn-secondary rounded-pill small mx-1 reply-btn" data-id="${
                                                         comment.id
                                                     }">Reply</button>
-                                                    <button class="btn btn-sm btn-danger rounded-pill small delete-btn" data-id="${
-                                                        comment.id
-                                                    }">Delete</button>
+                                                 <button class="btn btn-sm btn-danger rounded-pill small delete-btn" data-id="${
+                                                     comment.id
+                                                 }" id="comment-{{ $comment->id }}">Delete</button>
+
                                                 </div>
                                                 <div class="collapse" id="collapse-comment${
                                                     comment.id
@@ -676,10 +743,10 @@ $(document).ready(function () {
                             });
 
                             // Event listener for delete button
-                            $(".delete-btn").on("click", function () {
+                            /*  $(".delete-btn").on("click", function () {
                                 const commentId = $(this).data("id");
                                 deleteComment(commentId);
-                            });
+                            }); */
                         });
                     });
 
