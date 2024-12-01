@@ -68,9 +68,7 @@
                             <div class="border-bottom px-3 pt-2 pb-3 d-flex justify-content-between align-items-center">
                                 <p class="mb-0 text-dark fw-medium fs-4">Notifications</p>
                                 <a href="#!" class="text-muted">
-                                    <span>
-                                        <i class="me-1 icon-xs" data-feather="settings"></i>
-                                    </span>
+                                    <span><i class="me-1 icon-xs" data-feather="settings"></i></span>
                                 </a>
                             </div>
                             <div data-simplebar style="height: 250px">
@@ -80,28 +78,25 @@
                                     @endphp
                                     @forelse($notifications as $notify)
                                     <li class="list-group-item bg-light">
-                                        <a href="{{ url('/message?username=' . urlencode($notify->sender_username)) }}" class="text-muted">
-                                            <h5 class="mb-1">{{ $notify->sender_username ?? 'Unknown' }}</h5>
-                                            <p class="mb-0">{{ $notify->text ?? 'No message found' }}</p>
+                                        <a href="#!" class="text-muted">
+                                            <h5 class="mb-1">{{ $notify['sender_username'] }}</h5>
+                                            <p class="mb-0">{{ $notify['text'] }}</p>
                                         </a>
                                     </li>
                                     @empty
                                     <li class="list-group-item bg-light">
                                         <a href="#!" class="text-muted">
-                                            <p class="mb-0">No message found</p>
+                                            <p class="mb-0">No notifications</p>
                                         </a>
                                     </li>
                                     @endforelse
                                 </ul>
                             </div>
-                            @if(count($notifications) > 3)
-                            <div class="border-top px-3 py-2 text-center">
-                                <a href="{{ route('viewnotification.index') }}" class="text-inherit">View all Notifications</a>
-                            </div>
-                            @endif
                         </div>
                     </div>
                 </li>
+
+
                 <!-- List -->
                 <li class="dropdown ms-2">
                     <a class="rounded-circle" href="#!" role="button" id="dropdownUser" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

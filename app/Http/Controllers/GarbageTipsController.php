@@ -257,7 +257,7 @@ class GarbageTipsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    /*    public function destroy($id)
     {
         $garbagetip = GarbageTip::find($id);
 
@@ -270,8 +270,8 @@ class GarbageTipsController extends Controller
         $garbagetip->delete();
 
         return response()->json(['message' => 'Garbage tip deleted successfully', 'type' => 'success']);
-    }
-    public function destroyComment($commentId)
+    } */
+    public function destroy($commentId)
     {
         $comment = PostGarbageTipComment::find($commentId);
 
@@ -290,4 +290,19 @@ class GarbageTipsController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
     }
+
+
+    /*   public function destroy($commentId)
+    {
+        $comment = PostGarbageTipComment::find($commentId);
+
+        if (!$comment) {
+            Log::info('Comment not found for ID: ' . $commentId);
+            return response()->json(['success' => false, 'message' => 'Comment not found'], 404);
+        }
+
+        $comment->forceDelete();
+
+        return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
+    } */
 }

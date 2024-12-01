@@ -16,10 +16,27 @@ class GarbageCollectionController extends Controller
     public function index()
     {
         $page = "Garbage Collection Schedule";
-        $schedules = GarbageSchedule::whereNull('deleted_at')->get();
+        $schedules = GarbageSchedule::whereNull('deleted_at')->orderBy('created_at', 'desc')->get();
 
-        return view('pages.back.v_garbagecollection', compact('page','schedules'));
+        return view('pages.back.v_garbagecollection', compact('page', 'schedules'));
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Filter schedules by street or barangay
+        $schedules = GarbageSchedule::where('street', 'like', "%{$query}%")
+            ->orWhere('barangay', 'like', "%{$query}%")
+            ->get();
+
+        // Define the page title for the search results
+        $page = "Garbage Collection Schedule"; // Set the page title
+
+        // Return the filtered schedules to the view, including the page title
+        return view('pages.back.v_garbagecollection', compact('schedules', 'page'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -132,10 +149,10 @@ class GarbageCollectionController extends Controller
             'timeto' => 'required|date_format:H:i',
             'day' => 'required|string',
         ]);
-    
+
         $garbageSchedule = GarbageSchedule::findOrFail($id);
 
-    
+
         $garbageSchedule->update([
             'street' => $request->street,
             'barangay' => $request->address,
@@ -148,7 +165,7 @@ class GarbageCollectionController extends Controller
             'message' => 'Garbage schedule updated successfully!'
         ]);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

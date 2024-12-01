@@ -188,4 +188,39 @@ class HomeController extends Controller
 
         return response()->json(['data' => $formattedData]);
     }
+    public function approvePost(Request $request)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:post_reports,id',
+        ]);
+
+        $post = PostReport::find($request->post_id);
+
+        if ($post) {
+            $post->status = 'Accepted'; // Change the status to "Accepted"
+            $post->save();
+
+            return response()->json(['message' => 'Post status updated successfully', 'type' => 'success']);
+        }
+
+        return response()->json(['message' => 'Post not found', 'type' => 'error'], 404);
+    }
+
+    public function rejectedPost(Request $request)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:post_reports,id',
+        ]);
+
+        $post = PostReport::find($request->post_id);
+
+        if ($post) {
+            $post->status = 'Rejected'; // Change the status to "Accepted"
+            $post->save();
+
+            return response()->json(['message' => 'Post status updated successfully', 'type' => 'success']);
+        }
+
+        return response()->json(['message' => 'Post not found', 'type' => 'error'], 404);
+    }
 }

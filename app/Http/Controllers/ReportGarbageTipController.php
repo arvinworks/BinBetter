@@ -74,7 +74,7 @@ class ReportGarbageTipController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'content_id' => 'required|integer',
             'report_type' => 'required|string|max:255',
@@ -90,11 +90,11 @@ class ReportGarbageTipController extends Controller
             'report_message' => $request->report_message
         ]);
 
-        if($report) {
+        if ($report) {
             $gtReportCount = GarbageTip::where('id', $request->content_id)
-            ->first();
+                ->first();
 
-            $gtReportCount->increment('report_count'); 
+            $gtReportCount->increment('report_count');
         }
 
         return response()->json([
@@ -148,7 +148,7 @@ class ReportGarbageTipController extends Controller
         $idsArray = explode(',', $ids);
 
         ReportGarbageTip::whereIn('id', $idsArray)->update(['report_status' => 1]);
-    
+
         return response()->json([
             'message' => 'Garbage Tip Content removed successfully',
             'type' => 'success'

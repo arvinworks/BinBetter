@@ -100,6 +100,13 @@
 
                 <h1 class="display-4 fw-bold ls-sm">Garbage Schedule</h1>
 
+                <form action="{{ route('garbage-schedule.search') }}" method="GET" class="mb-4">
+                    <div class="input-group">
+                        <input type="text" name="query" style="max-width: 500px; margin-left: 700px;" class="form-control" placeholder="Search by street or barangay" value="{{ request()->query('query') }}">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+
                 @forelse($schedules as $schedule)
                 <div class="card mb-5 mt-5">
                     <div class="card-body">
@@ -127,9 +134,6 @@
                                 <span>{{ $schedule->collection_day }}</span>
                                 <small><b>Collection Day</b></small>
                             </div>
-                          
-                    
-
                         </div>
                     </div>
                 </div>

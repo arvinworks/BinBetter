@@ -242,11 +242,24 @@
                                                 <p><b>Status:</b> 
                                                     <span>${post.status === 'Accepted' ? 'Area Cleaned' 
                                                         : post.status === 'Pending' ? 'Area not yet Cleaned' 
-                                                        : '--'}</span>
+                                                        : post.status === 'Rejected' ? 'Report Rejected' : ''}</span>
                                                 </p>
                                             </div>
                                             <div><p><b>Posted Date:</b> <i>${postTimeAgo}</i></p></div>
+                                            
                                         </div>
+                                        @if(Auth::user()->role === 'LGU')
+ <div>
+        
+                <p>
+                    ${post.status === 'Pending' ? `
+      
+                        <button class="btn btn-sm btn-success approve-button" data-postid="${post.id}">Approve</button> 
+                        <button class="btn btn-sm btn-danger rejected-button" data-postid="${post.id}">Reject</button>
+                    ` : ''}
+                </p>
+            </div>
+            @endif
 
                                         <div class="mb-5 hstack gap-3 align-items-center">
                                             <div class="fs-5 comment-count">${topLevelComments.length} Comments</div> <!-- Use topLevelComments -->
@@ -261,8 +274,8 @@
                                                         <label for="new-comment">Leave a comment here</label>
                                                     </div>
                                                     <div class="hstack justify-content-end gap-1">
-                                                        <button class="btn btn-sm btn-secondary rounded-pill cancel-comment" data-postid="${post.id}">Cancel</button>
                                                         <button class="btn btn-sm btn-primary rounded-pill post-comment" data-postid="${post.id}">Comment</button> 
+                                                          <button class="btn btn-sm btn-secondary rounded-pill cancel-comment" data-postid="${post.id}">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -474,9 +487,9 @@
                                                         <label for="new-comment">Leave a comment here</label>
                                                     </div>
                                                     <div class="hstack justify-content-end gap-1">
-                                                        <button class="btn btn-sm btn-secondary rounded-pill cancel-recycled-comment" data-postid="${post.id}">Cancel</button>
                                                         <button class="btn btn-sm btn-primary rounded-pill post-recycled-comment" data-postid="${post.id}">Comment</button> 
-                                                    </div>
+                                                     <button class="btn btn-sm btn-secondary rounded-pill cancel-recycled-comment" data-postid="${post.id}">Cancel</button>
+                                                        </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -812,6 +825,50 @@
             });
         }
 
+    });
+
+    $(document).on('click', '.approve-button', function() {
+        const postId = $(this).data('postid');
+
+        $.ajax({
+            url: '/post/approve',
+            type: 'POST',
+            data: {
+                post_id: postId,
+                _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+            },
+            success: function(response) {
+                alert(response.message); // Show success message
+                // Optionally, update the UI to reflect the new status
+                $(`.post-item[data-postid="${postId}"] .status-span`).text('Accepted');
+                location.reload();
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message || 'An error occurred');
+            }
+        });
+    });
+
+    $(document).on('click', '.rejected-button', function() {
+        const postId = $(this).data('postid');
+
+        $.ajax({
+            url: '/post/rejected',
+            type: 'POST',
+            data: {
+                post_id: postId,
+                _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+            },
+            success: function(response) {
+                alert(response.message); // Show success message
+                // Optionally, update the UI to reflect the new status
+                $(`.post-item[data-postid="${postId}"] .status-span`).text('Rejected');
+                location.reload();
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.message || 'An error occurred');
+            }
+        });
     });
 </script>
 @endpush

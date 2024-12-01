@@ -41,6 +41,8 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     Route::get('/post-recycled', [App\Http\Controllers\HomeController::class, 'post_recycled_api']);
     Route::post('/post-destroy', [App\Http\Controllers\HomeController::class, 'post_destroy']);
     Route::get('/analytics', [App\Http\Controllers\HomeController::class, 'analytics_index'])->name('analytics');
+    Route::post('/post/approve', [HomeController::class, 'approvePost'])->name('post.approve');
+    Route::post('/post/rejected', [HomeController::class, 'rejectedPost'])->name('post.rejected');
 
     Route::get('/view-notification', [App\Http\Controllers\HomeController::class, 'view_notification'])->name('viewnotification.index');
     Route::get('/view-notification-api', [App\Http\Controllers\HomeController::class, 'view_notification_api'])->name('notification.api.index');
@@ -76,7 +78,7 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     Route::post('/postreport-accept', [App\Http\Controllers\PostReportController::class, 'accept_report']);
 
     Route::resource('garbage', App\Http\Controllers\GarbageCollectionController::class);
-
+    Route::get('/garbage-schedule/search', [App\Http\Controllers\GarbageCollectionController::class, 'search'])->name('garbage-schedule.search');
 
     Route::resource('garbagetip', App\Http\Controllers\GarbageTipsController::class);
     Route::get('garbagetip-comment-api',  [App\Http\Controllers\GarbageTipsController::class, 'comment_api']);
@@ -88,7 +90,6 @@ Route::middleware(['prevent-back-history', 'auth', 'verified'])->group(function 
     Route::resource('managereward', App\Http\Controllers\RewardManagementController::class);
     Route::resource('comment', App\Http\Controllers\CommentController::class);
     Route::post('/comment/{action}/{commentId}', [App\Http\Controllers\CommentController::class, 'handleLikeDislike']);
-    Route::delete('/garbages/comments/{commentId}', [App\Http\Controllers\GarbageTipsController::class, 'destroyComment']);
 
     Route::resource('gcash', App\Http\Controllers\GcashSettingsController::class);
     Route::post('gcash-switch', [App\Http\Controllers\GcashSettingsController::class, 'switch_status']);

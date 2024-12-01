@@ -168,43 +168,6 @@ $(document).ready(function () {
         $("#descriptionModal").modal("show");
     });
 
-    function removeGarbageTip(id) {
-        console.log("Deleting comment with ID: " + id); // Check the ID passed
-        $.ajax({
-            url: "/delete-comment/" + id, // Make sure this URL is correct
-            method: "DELETE",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"), // CSRF token if needed
-            },
-            success: function (response) {
-                console.log(response); // Check the response from the server
-                if (response.success) {
-                    Swal.fire(
-                        "Deleted!",
-                        "Your comment has been deleted.",
-                        "success"
-                    );
-                    // Optionally, remove the comment from the DOM
-                    $(`#comment-${id}`).remove();
-                } else {
-                    Swal.fire(
-                        "Error!",
-                        "There was an issue deleting your comment.",
-                        "error"
-                    );
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Delete request failed: ", error);
-                Swal.fire(
-                    "Error!",
-                    "There was an issue deleting your comment.",
-                    "error"
-                );
-            },
-        });
-    }
-
     $(document).on("click", ".delete-btn", function () {
         let id = $(this).data("id"); // Retrieves the comment's ID stored in the data-id attribute.
 
@@ -459,12 +422,13 @@ $(document).ready(function () {
                                                 <label for="new-comment">Leave a comment here</label>
                                             </div>
                                             <div class="hstack justify-content-end gap-1">
-                                                <button class="btn btn-sm btn-secondary rounded-pill cancel-comment" data-tutorialid="${
-                                                    tutorial.id
-                                                }">Cancel</button>
+                                              
                                                 <button class="btn btn-sm btn-primary rounded-pill tutorial-comment" data-tutorialid="${
                                                     tutorial.id
                                                 }">Comment</button>
+                                                  <button class="btn btn-sm btn-secondary rounded-pill cancel-comment" data-tutorialid="${
+                                                      tutorial.id
+                                                  }">Cancel</button>
                                             </div>
                                         </div>
                                     </div>
