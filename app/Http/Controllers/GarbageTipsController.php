@@ -271,7 +271,7 @@ class GarbageTipsController extends Controller
 
         return response()->json(['message' => 'Garbage tip deleted successfully', 'type' => 'success']);
     } */
-    public function destroy($commentId)
+    /*  public function destroy($commentId)
     {
         $comment = PostGarbageTipComment::find($commentId);
 
@@ -290,7 +290,7 @@ class GarbageTipsController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
     }
-
+ */
 
     /*   public function destroy($commentId)
     {
@@ -305,4 +305,33 @@ class GarbageTipsController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
     } */
+
+    public function destroy($id)
+    {
+        // Determine the type of deletion (GarbageTip or PostGarbageTipComment)
+        $garbagetip = GarbageTip::find($id);
+        $comment = PostGarbageTipComment::find($id);
+
+        if ($garbagetip) {
+            // Handle GarbageTip deletion
+            if ($garbagetip->photos && file_exists(public_path($garbagetip->photos))) {
+                unlink(public_path($garbagetip->photos));
+            }
+
+            $garbagetip->delete();
+
+            return response()->json(['message' => 'Garbage tip deleted successfully', 'type' => 'success']);
+        } elseif ($comment) {
+            // Handle PostGarbageTipComment deletion
+            if (auth()->user()->id !== $comment->user_id && !auth()->user()->is_admin) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized to delete this comment'], 403);
+            }
+
+            $comment->forceDelete();
+
+            return response()->json(['success' => true, 'message' => 'Comment deleted successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Resource not found'], 404);
+        }
+    }
 }

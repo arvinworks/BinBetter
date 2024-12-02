@@ -31,7 +31,7 @@
                         </div>
                         <div>
 
-                            <button class="btn btn-primary-soft btn-sm rounded-0" id="add-btn" data-modaltitle="Add">
+                            <button class="btn btn-primary-soft btn-sm rounded-0" id="add-btn" data-modaltitle="Submit Payment Proof">
                                 Pay <i class="bi bi-plus-square fs-4 ml-2"></i>
                             </button>
 

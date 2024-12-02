@@ -13,7 +13,7 @@
                     </div>
                     @if(in_array(Auth::user()->role, ['Resident', 'NGO', 'LGU']))
                     <div>
-                        <button class="btn btn-secondary btn-sm rounded-0" id="add-btn" data-modaltitle="Add">
+                        <button class="btn btn-secondary btn-sm rounded-0" id="add-btn" data-modaltitle="Report or Sell Recyclables">
                             Add <i class="bi bi-plus-square fs-4 ml-2"></i>
                         </button>
                     </div>

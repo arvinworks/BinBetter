@@ -30,7 +30,7 @@
                         </div>
                         @if(Auth::user()->role === 'NGO')
                         <div>
-                            <button class="btn btn-secondary btn-sm rounded-0" id="add-btn" data-modaltitle="Add">
+                            <button class="btn btn-secondary btn-sm rounded-0" id="add-btn" data-modaltitle="Schedule a Clean-Up Drive">
                                 Add <i class="bi bi-plus-square fs-4 ml-2"></i>
                             </button>
                         </div>
